@@ -24,7 +24,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
         .{
             .wave = Synths.Sine.generate(allocator, .{
                 .length = samples_per_beat * 1,
-                .frequency = Scale.generate_freq(.{ .code = .c, .octave = 3 }),
+                .frequency = Scale.generate_freq(.{ .code = .c, .octave = 4 }),
                 .amplitude = options.amplitude,
 
                 .sample_rate = options.sample_rate,
