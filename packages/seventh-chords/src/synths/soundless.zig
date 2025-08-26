@@ -1,6 +1,5 @@
 const std = @import("std");
 const lightmix = @import("lightmix");
-const e_minor = @import("e-minor");
 
 const Wave = lightmix.Wave;
 
