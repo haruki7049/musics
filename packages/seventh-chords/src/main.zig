@@ -9,7 +9,7 @@ pub fn main() !void {
     const allocator = std.heap.page_allocator;
 
     const wave: Wave = try seventh_chords.generate(allocator, .{
-        .bpm = 70,
+        .bpm = 130,
         .amplitude = 1.0,
 
         .sample_rate = 44100,

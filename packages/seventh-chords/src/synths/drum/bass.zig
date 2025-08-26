@@ -11,7 +11,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
     const length: usize = 44100;
 
     const sample_rate: f32 = @floatFromInt(options.sample_rate);
-    const bass_drum_data: []const f32 = generate_bass_drum_data(frequency, options.amplitude * 2.0, length, sample_rate, allocator);
+    const bass_drum_data: []const f32 = generate_bass_drum_data(frequency, options.amplitude * 3.0, length, sample_rate, allocator);
     defer allocator.free(bass_drum_data);
 
     const result: Wave = Wave.init(bass_drum_data, allocator, .{

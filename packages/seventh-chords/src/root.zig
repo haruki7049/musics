@@ -18,10 +18,14 @@ const Options = struct {
 };
 
 pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
-    //const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
+    const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
 
-    const melodies: []const WaveInfo = &[_]WaveInfo {
-        .{
+    var beats = std.ArrayList(WaveInfo).init(allocator);
+    defer beats.deinit();
+
+    for (0..16) |i| {
+        const start_point = samples_per_beat * i;
+        try beats.append(.{
             .wave = Synths.Drum.Bass.generate(allocator, .{
                 .amplitude = options.amplitude,
 
@@ -29,11 +33,29 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
                 .channels = options.channels,
                 .bits = options.bits,
             }),
+            .start_point = start_point,
+        });
+    }
+
+    const melodies: []const WaveInfo = &[_]WaveInfo {
+        .{
+            .wave = Synths.Triangle.generate(allocator, .{
+                .frequency = Scale.generate_freq(.{ .code = .c, .octave = 3, }),
+                .length = samples_per_beat * 1,
+                .amplitude = options.amplitude,
+
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }).filter(decay),
             .start_point = 0,
         },
     };
 
-    const composer: Composer = Composer.init_with(melodies, allocator, .{
+    const data: []const WaveInfo = try std.mem.concat(allocator, WaveInfo, &[_][]const WaveInfo{ beats.items, melodies });
+    defer allocator.free(data);
+
+    const composer: Composer = Composer.init_with(data, allocator, .{
         .sample_rate = options.sample_rate,
         .channels = options.channels,
         .bits = options.bits,
