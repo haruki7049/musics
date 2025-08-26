@@ -18,19 +18,17 @@ const Options = struct {
 };
 
 pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
-    const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
+    //const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
 
     const melodies: []const WaveInfo = &[_]WaveInfo {
         .{
-            .wave = Synths.Sine.generate(allocator, .{
-                .length = samples_per_beat * 1,
-                .frequency = Scale.generate_freq(.{ .code = .c, .octave = 4 }),
+            .wave = Synths.Drum.Bass.generate(allocator, .{
                 .amplitude = options.amplitude,
 
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
-            }).filter(decay),
+            }),
             .start_point = 0,
         },
     };
