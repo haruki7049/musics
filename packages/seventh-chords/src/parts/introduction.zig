@@ -39,9 +39,9 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
 
     const melodies: []const WaveInfo = &[_]WaveInfo {
         .{
-            .wave = Synths.Triangle.generate(allocator, .{
-                .frequency = Scale.generate_freq(.{ .code = .c, .octave = 3, }),
-                .length = samples_per_beat * 1,
+            .wave = try Synths.Sine.Chords.major_seventh(allocator, .{
+                .base_frequency = Scale.generate_freq(.{ .code = .c, .octave = 2 }),
+                .length = samples_per_beat * 4,
                 .amplitude = options.amplitude,
 
                 .sample_rate = options.sample_rate,
