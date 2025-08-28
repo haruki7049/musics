@@ -7,7 +7,7 @@ const WaveInfo = Composer.WaveInfo;
 
 const Sine = @import("../sine.zig");
 
-pub fn major_seventh(allocator: std.mem.Allocator, options: Options) !Wave {
+pub fn major_seventh(allocator: std.mem.Allocator, options: Options) Wave {
     const base: Wave = Sine.generate(allocator, .{
         .frequency = options.base_frequency,
         .length = options.length,
