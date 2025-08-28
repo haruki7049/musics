@@ -1,10 +1,9 @@
 const std = @import("std");
 const lightmix = @import("lightmix");
-const project_root = @import("../../root.zig");
 
 const Wave = lightmix.Wave;
 
-const Scale = project_root.Scale;
+const Scale = @import("../../scale.zig");
 
 pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
     const frequency: f32 = Scale.generate_freq(.{ .code = .c, .octave = 2, });
