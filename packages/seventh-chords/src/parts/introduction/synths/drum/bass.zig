@@ -6,7 +6,10 @@ const Wave = lightmix.Wave;
 const Scale = @import("../../scale.zig");
 
 pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
-    const frequency: f32 = Scale.generate_freq(.{ .code = .c, .octave = 2, });
+    const frequency: f32 = Scale.generate_freq(.{
+        .code = .c,
+        .octave = 2,
+    });
     const length: usize = 44100;
 
     const sample_rate: f32 = @floatFromInt(options.sample_rate);

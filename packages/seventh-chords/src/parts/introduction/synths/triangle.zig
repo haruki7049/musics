@@ -24,9 +24,9 @@ fn generate_data(frequency: f32, amplitude: f32, length: usize, sample_rate: f32
     for (0..length) |i| {
         const phase = @as(f32, @floatFromInt(i % @as(usize, @intFromFloat(period)))) / period;
         const triangle_value: f32 = if (phase < 0.5)
-            (phase * 4.0) - 1.0       // First half
+            (phase * 4.0) - 1.0 // First half
         else
-            3.0 - (phase * 4.0);      // Second half
+            3.0 - (phase * 4.0); // Second half
         const v: f32 = triangle_value * amplitude;
 
         result.append(v) catch @panic("Out of memory");
