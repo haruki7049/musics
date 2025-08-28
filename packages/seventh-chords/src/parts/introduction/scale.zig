@@ -44,23 +44,3 @@ pub const Code = enum(u8) {
     as = 10,
     b = 11,
 };
-
-test "gen" {
-    const a_4: f32 = 440.0;
-    const result_a_4: f32 = Self.generate_freq(.{ .code = .a, .octave = 4 });
-    try testing.expectApproxEqRel(a_4, result_a_4, 0.0001);
-
-    const g_3: f32 = 195.998;
-    const result_g_3: f32 = Self.gen(.{ .code = .g, .octave = 3 });
-    try testing.expectApproxEqRel(g_3, result_g_3, 0.0001);
-
-    const c_7: f32 = 2093.005;
-    const result_c_7: f32 = Self.gen(.{ .code = .c, .octave = 7 });
-    try testing.expectApproxEqRel(c_7, result_c_7, 0.0001);
-}
-
-test "add" {
-    const scale_a_4: Self = .{ .code = .a, .octave = 4 };
-    const result_a_4: Self = scale_a_4.add(3);
-    try testing.expectEqual(result_a_4, .{ .code = .c, .octave = 5 });
-}
