@@ -27,7 +27,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
         const start_point = samples_per_beat * i;
         try beats.append(.{
             .wave = Synths.Drum.Bass.generate(allocator, .{
-                .amplitude = options.amplitude,
+                .amplitude = options.amplitude * 0.8,
 
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
@@ -39,15 +39,26 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
 
     const melodies: []const WaveInfo = &[_]WaveInfo{
         .{
-            .wave = Synths.Sine.Chords.major_seventh(allocator, .{
-                .base_frequency = Scale.generate_freq(.{ .code = .c, .octave = 2 }),
-                .length = samples_per_beat * 4,
+            .wave = Synths.Triangle.Chords.major_seventh(allocator, .{
+                .base_frequency = Scale.generate_freq(.{ .code = .c, .octave = 5 }),
+                .length = samples_per_beat * 8,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
             }).filter(decay),
             .start_point = 0,
+        },
+        .{
+            .wave = Synths.Triangle.Chords.major_seventh(allocator, .{
+                .base_frequency = Scale.generate_freq(.{ .code = .c, .octave = 5 }),
+                .length = samples_per_beat * 8,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }).filter(decay),
+            .start_point = samples_per_beat * 8,
         },
     };
 
