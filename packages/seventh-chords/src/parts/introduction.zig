@@ -23,7 +23,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
     var beats = std.ArrayList(WaveInfo).init(allocator);
     defer beats.deinit();
 
-    for (0..16) |i| {
+    for (0..8) |i| {
         const start_point = samples_per_beat * i;
 
         try beats.append(.{
@@ -41,8 +41,8 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
     const melodies: []const WaveInfo = &[_]WaveInfo{
         .{
             .wave = Synths.Triangle.Chords.Seventh.major(allocator, .{
-                .base_frequency = Scale.generate_freq(.{ .code = .c, .octave = 5 }),
-                .length = samples_per_beat * 4,
+                .octave = 4,
+                .length = samples_per_beat,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
@@ -52,14 +52,69 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
         },
         .{
             .wave = Synths.Triangle.Chords.Seventh.major(allocator, .{
-                .base_frequency = Scale.generate_freq(.{ .code = .c, .octave = 5 }),
-                .length = samples_per_beat * 8,
+                .octave = 4,
+                .length = samples_per_beat * 1,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
             }).filter(decay),
-            .start_point = samples_per_beat * 8,
+            .start_point = samples_per_beat * 1,
+        },
+        .{
+            .wave = Synths.Triangle.Chords.Seventh.minor(allocator, .{
+                .octave = 4,
+                .length = samples_per_beat * 1,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }).filter(decay),
+            .start_point = samples_per_beat * 2,
+        },
+        .{
+            .wave = Synths.Triangle.Chords.Seventh.minor(allocator, .{
+                .octave = 4,
+                .length = samples_per_beat * 1,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }).filter(decay),
+            .start_point = samples_per_beat * 3,
+        },
+        .{
+            .wave = Synths.Triangle.Chords.Seventh.major(allocator, .{
+                .octave = 4,
+                .length = samples_per_beat * 1,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }).filter(decay),
+            .start_point = samples_per_beat * 4,
+        },
+        .{
+            .wave = Synths.Triangle.Chords.Seventh.major(allocator, .{
+                .octave = 4,
+                .length = samples_per_beat * 1,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }).filter(decay),
+            .start_point = samples_per_beat * 5,
+        },
+        .{
+            .wave = Synths.Triangle.Chords.Seventh.minor(allocator, .{
+                .octave = 4,
+                .length = samples_per_beat * 2,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }).filter(decay),
+            .start_point = samples_per_beat * 6,
         },
     };
 
