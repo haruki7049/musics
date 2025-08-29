@@ -6,25 +6,48 @@ const Wave = lightmix.Wave;
 const Scale = @import("../../scale.zig");
 
 pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
-    const frequency: f32 = Scale.generate_freq(.{
-        .code = .c,
-        .octave = 2,
-    });
-    const length: usize = 44100;
+    const base_frequency: f32 = 80.0;
+    const attack_frequency: f32 = 200.0;
+    const length: usize = 8000;
 
     const sample_rate: f32 = @floatFromInt(options.sample_rate);
-    const bass_drum_data: []const f32 = generate_bass_drum_data(frequency, options.amplitude * 3.0, length, sample_rate, allocator);
-    defer allocator.free(bass_drum_data);
+    const base_data: []const f32 = generate_sine_data(base_frequency, options.amplitude, length, sample_rate, allocator);
+    defer allocator.free(base_data);
 
-    const result: Wave = Wave.init(bass_drum_data, allocator, .{
+    const attack_data: []const f32 = blk: {
+        const attack_data_without_zero: []const f32 = generate_sine_data(attack_frequency, options.amplitude / 2, length / 2, sample_rate, allocator);
+        defer allocator.free(attack_data_without_zero);
+
+        var zero_data = std.ArrayList(f32).init(allocator);
+        defer zero_data.deinit();
+
+        for (0..length / 2) |_|
+            zero_data.append(0.0) catch @panic("Out of memory");
+
+        const result: []const f32 = std.mem.concat(allocator, f32, &[_][]const f32{ attack_data_without_zero, zero_data.items }) catch @panic("Out of memory");
+        std.debug.assert(result.len == length);
+
+        break :blk result;
+    };
+    defer allocator.free(attack_data);
+
+    var data = std.ArrayList(f32).init(allocator);
+    defer data.deinit();
+
+    for (0..base_data.len) |i| {
+        const value: f32 = base_data[i] + attack_data[i];
+        data.append(value) catch @panic("Out of memory");
+    }
+
+    const result: Wave = Wave.init(data.items, allocator, .{
         .sample_rate = options.sample_rate,
         .channels = options.channels,
         .bits = options.bits,
-    }).filter(decay).filter(staccato).filter(decay);
+    }).filter(staccato).filter(decay);
     return result;
 }
 
-fn generate_bass_drum_data(frequency: f32, amplitude: f32, length: usize, sample_rate: f32, allocator: std.mem.Allocator) []const f32 {
+fn generate_sine_data(frequency: f32, amplitude: f32, length: usize, sample_rate: f32, allocator: std.mem.Allocator) []const f32 {
     const radians_per_sec: f32 = frequency * 2.0 * std.math.pi;
 
     var result = std.ArrayList(f32).init(allocator);
@@ -62,7 +85,7 @@ fn decay(original_wave: Wave) !Wave {
 fn staccato(original_wave: Wave) !Wave {
     var result = std.ArrayList(f32).init(original_wave.allocator);
 
-    const length: usize = original_wave.data.len / 4;
+    const length: usize = original_wave.data.len / 8;
     for (0..length) |i| {
         const v = original_wave.data[i];
         try result.append(v);

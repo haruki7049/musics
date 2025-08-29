@@ -25,9 +25,10 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
 
     for (0..16) |i| {
         const start_point = samples_per_beat * i;
+
         try beats.append(.{
             .wave = Synths.Drum.Bass.generate(allocator, .{
-                .amplitude = options.amplitude * 0.8,
+                .amplitude = options.amplitude,
 
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
