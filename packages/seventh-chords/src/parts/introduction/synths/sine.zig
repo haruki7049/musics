@@ -4,6 +4,7 @@ const lightmix = @import("lightmix");
 const Wave = lightmix.Wave;
 
 pub const Chords = @import("./sine/chords.zig");
+pub const Arpeggio = @import("./sine/arpeggio.zig");
 
 pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
     const sample_rate: f32 = @floatFromInt(options.sample_rate);

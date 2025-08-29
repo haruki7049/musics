@@ -86,7 +86,42 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
         },
     };
 
-    const data: []const WaveInfo = try std.mem.concat(allocator, WaveInfo, &[_][]const WaveInfo{ beats.items, melodies });
+    const base_chords: []const WaveInfo = &[_]WaveInfo{
+        .{
+            .wave = Synths.Sine.Chords.generate(allocator, .{
+                .scales = &[_]Scale{
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .e, .octave = 4 },
+                    .{ .code = .g, .octave = 4 },
+                    .{ .code = .b, .octave = 4 },
+                },
+                .length = samples_per_beat * 4,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }).filter(decay),
+            .start_point = samples_per_beat * 0,
+        },
+        .{
+            .wave = Synths.Sine.Chords.generate(allocator, .{
+                .scales = &[_]Scale{
+                    .{ .code = .d, .octave = 4 },
+                    .{ .code = .f, .octave = 4 },
+                    .{ .code = .a, .octave = 4 },
+                    .{ .code = .c, .octave = 5 },
+                },
+                .length = samples_per_beat * 4,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }).filter(decay),
+            .start_point = samples_per_beat * 4,
+        },
+    };
+
+    const data: []const WaveInfo = try std.mem.concat(allocator, WaveInfo, &[_][]const WaveInfo{ beats.items, melodies, base_chords });
     defer allocator.free(data);
 
     const composer: Composer = Composer.init_with(data, allocator, .{
