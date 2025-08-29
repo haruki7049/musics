@@ -6,7 +6,7 @@ const Wave = lightmix.Wave;
 const Scale = @import("../../scale.zig");
 
 pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
-    const base_frequency: f32 = 80.0;
+    const base_frequency: f32 = 100.0;
     const attack_frequency: f32 = 200.0;
     const length: usize = 8000;
 

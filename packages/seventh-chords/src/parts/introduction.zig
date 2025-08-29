@@ -42,7 +42,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
         .{
             .wave = Synths.Triangle.Chords.major_seventh(allocator, .{
                 .base_frequency = Scale.generate_freq(.{ .code = .c, .octave = 5 }),
-                .length = samples_per_beat * 8,
+                .length = samples_per_beat * 4,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
