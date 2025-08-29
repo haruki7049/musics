@@ -38,118 +38,51 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
         });
     }
 
+    try beats.append(.{
+        .wave = Synths.Drum.Bass.generate(allocator, .{
+            .amplitude = options.amplitude,
+
+            .sample_rate = options.sample_rate,
+            .channels = options.channels,
+            .bits = options.bits,
+        }),
+        .start_point = samples_per_beat * 9,
+    });
+
     const melodies: []const WaveInfo = &[_]WaveInfo{
         .{
-            .wave = Synths.Triangle.Chords.generate(allocator, .{
+            .wave = Synths.Triangle.Arpeggio.generate(allocator, .{
                 .scales = &[_]Scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
                     .{ .code = .g, .octave = 4 },
                     .{ .code = .b, .octave = 4 },
                 },
-                .length = samples_per_beat,
+                .length = samples_per_beat / 2,
+                .duration = samples_per_beat / 2,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
-            }).filter(decay),
+            }),
             .start_point = samples_per_beat * 0,
         },
         .{
-            .wave = Synths.Triangle.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .c, .octave = 4 },
-                    .{ .code = .e, .octave = 4 },
-                    .{ .code = .g, .octave = 4 },
-                    .{ .code = .b, .octave = 4 },
-                },
-                .length = samples_per_beat,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 1,
-        },
-        .{
-            .wave = Synths.Triangle.Chords.generate(allocator, .{
+            .wave = Synths.Triangle.Arpeggio.generate(allocator, .{
                 .scales = &[_]Scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },
                     .{ .code = .a, .octave = 4 },
                     .{ .code = .c, .octave = 5 },
                 },
-                .length = samples_per_beat,
+                .length = samples_per_beat / 2,
+                .duration = samples_per_beat / 2,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 2,
-        },
-        .{
-            .wave = Synths.Triangle.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .d, .octave = 4 },
-                    .{ .code = .f, .octave = 4 },
-                    .{ .code = .a, .octave = 4 },
-                    .{ .code = .c, .octave = 5 },
-                },
-                .length = samples_per_beat,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 3,
-        },
-        .{
-            .wave = Synths.Triangle.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .c, .octave = 4 },
-                    .{ .code = .e, .octave = 4 },
-                    .{ .code = .g, .octave = 4 },
-                    .{ .code = .b, .octave = 4 },
-                },
-                .length = samples_per_beat,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
+            }),
             .start_point = samples_per_beat * 4,
-        },
-        .{
-            .wave = Synths.Triangle.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .c, .octave = 4 },
-                    .{ .code = .e, .octave = 4 },
-                    .{ .code = .g, .octave = 4 },
-                    .{ .code = .b, .octave = 4 },
-                },
-                .length = samples_per_beat,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 5,
-        },
-        .{
-            .wave = Synths.Triangle.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .d, .octave = 4 },
-                    .{ .code = .f, .octave = 4 },
-                    .{ .code = .a, .octave = 4 },
-                    .{ .code = .c, .octave = 5 },
-                },
-                .length = samples_per_beat * 2,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 6,
         },
     };
 
