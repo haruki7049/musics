@@ -40,7 +40,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
 
     const melodies: []const WaveInfo = &[_]WaveInfo{
         .{
-            .wave = Synths.Triangle.Chords.major_seventh(allocator, .{
+            .wave = Synths.Triangle.Chords.Seventh.major(allocator, .{
                 .base_frequency = Scale.generate_freq(.{ .code = .c, .octave = 5 }),
                 .length = samples_per_beat * 4,
                 .amplitude = options.amplitude,
@@ -51,7 +51,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
             .start_point = 0,
         },
         .{
-            .wave = Synths.Triangle.Chords.major_seventh(allocator, .{
+            .wave = Synths.Triangle.Chords.Seventh.major(allocator, .{
                 .base_frequency = Scale.generate_freq(.{ .code = .c, .octave = 5 }),
                 .length = samples_per_beat * 8,
                 .amplitude = options.amplitude,
