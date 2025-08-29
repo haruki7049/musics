@@ -8,135 +8,43 @@ const WaveInfo = Composer.WaveInfo;
 const Triangle = @import("../triangle.zig");
 const Scale = @import("../../scale.zig");
 
-pub const Seventh = struct {
-    pub fn minor(allocator: std.mem.Allocator, options: Options) Wave {
-        const base_frequency: f32 = Scale.generate_freq(.{ .code = .d, .octave = options.octave, });
+pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
+    var wave_list = std.ArrayList(Wave).init(allocator);
+    defer wave_list.deinit();
 
-        const base: Wave = Triangle.generate(allocator, .{
-            .frequency = base_frequency,
+    for (options.scales) |scale| {
+        const wave: Wave = Triangle.generate(allocator, .{
+            .frequency = scale.generate_freq(),
             .length = options.length,
-            .amplitude = options.amplitude / 4,
-            .sample_rate = options.sample_rate,
-            .channels = options.channels,
-            .bits = options.bits,
-        });
-        defer base.deinit();
-
-        const plus_four: Wave = Triangle.generate(allocator, .{
-            .frequency = add_half_tones(base_frequency, 3.0),
-            .length = options.length,
-            .amplitude = options.amplitude / 4,
+            .amplitude = options.amplitude / @as(f32, @floatFromInt(options.scales.len)), // Reduce volume when scales are incremented
 
             .sample_rate = options.sample_rate,
             .channels = options.channels,
             .bits = options.bits,
         });
-        defer plus_four.deinit();
 
-        const plus_seven: Wave = Triangle.generate(allocator, .{
-            .frequency = add_half_tones(base_frequency, 7.0),
-            .length = options.length,
-            .amplitude = options.amplitude / 4,
-
-            .sample_rate = options.sample_rate,
-            .channels = options.channels,
-            .bits = options.bits,
-        });
-        defer plus_seven.deinit();
-
-        const plus_eleven: Wave = Triangle.generate(allocator, .{
-            .frequency = add_half_tones(base_frequency, 10.0),
-            .length = options.length,
-            .amplitude = options.amplitude / 4,
-
-            .sample_rate = options.sample_rate,
-            .channels = options.channels,
-            .bits = options.bits,
-        });
-        defer plus_eleven.deinit();
-
-        const composer: Composer = Composer.init_with(&[_]WaveInfo{
-            .{ .wave = base, .start_point = 0 },
-            .{ .wave = plus_four, .start_point = 0 },
-            .{ .wave = plus_seven, .start_point = 0 },
-            .{ .wave = plus_eleven, .start_point = 0 },
-        }, allocator, .{
-            .sample_rate = options.sample_rate,
-            .channels = options.channels,
-            .bits = options.bits,
-        });
-        defer composer.deinit();
-
-        return composer.finalize();
+        wave_list.append(wave) catch @panic("Out of memory");
     }
 
-    pub fn major(allocator: std.mem.Allocator, options: Options) Wave {
-        const base_frequency: f32 = Scale.generate_freq(.{ .code = .c, .octave = options.octave, });
+    var waveinfo_list = std.ArrayList(WaveInfo).init(allocator);
+    defer waveinfo_list.deinit();
 
-        const base: Wave = Triangle.generate(allocator, .{
-            .frequency = base_frequency,
-            .length = options.length,
-            .amplitude = options.amplitude / 4,
-            .sample_rate = options.sample_rate,
-            .channels = options.channels,
-            .bits = options.bits,
-        });
-        defer base.deinit();
-
-        const plus_four: Wave = Triangle.generate(allocator, .{
-            .frequency = add_half_tones(base_frequency, 4.0),
-            .length = options.length,
-            .amplitude = options.amplitude / 4,
-
-            .sample_rate = options.sample_rate,
-            .channels = options.channels,
-            .bits = options.bits,
-        });
-        defer plus_four.deinit();
-
-        const plus_seven: Wave = Triangle.generate(allocator, .{
-            .frequency = add_half_tones(base_frequency, 7.0),
-            .length = options.length,
-            .amplitude = options.amplitude / 4,
-
-            .sample_rate = options.sample_rate,
-            .channels = options.channels,
-            .bits = options.bits,
-        });
-        defer plus_seven.deinit();
-
-        const plus_eleven: Wave = Triangle.generate(allocator, .{
-            .frequency = add_half_tones(base_frequency, 11.0),
-            .length = options.length,
-            .amplitude = options.amplitude / 4,
-
-            .sample_rate = options.sample_rate,
-            .channels = options.channels,
-            .bits = options.bits,
-        });
-        defer plus_eleven.deinit();
-
-        const composer: Composer = Composer.init_with(&[_]WaveInfo{
-            .{ .wave = base, .start_point = 0 },
-            .{ .wave = plus_four, .start_point = 0 },
-            .{ .wave = plus_seven, .start_point = 0 },
-            .{ .wave = plus_eleven, .start_point = 0 },
-        }, allocator, .{
-            .sample_rate = options.sample_rate,
-            .channels = options.channels,
-            .bits = options.bits,
-        });
-        defer composer.deinit();
-
-        return composer.finalize();
+    for (wave_list.items) |wave| {
+        waveinfo_list.append(.{ .wave = wave, .start_point = 0 }) catch @panic("Out of memory");
     }
-};
-fn add_half_tones(base_frequency: f32, intervals: usize) f32 {
-    return base_frequency * std.math.pow(f32, 2.0, @as(f32, @floatFromInt(intervals)) / 12.0);
+
+    const composer: Composer = Composer.init_with(waveinfo_list.items, allocator, .{
+        .sample_rate = options.sample_rate,
+        .channels = options.channels,
+        .bits = options.bits,
+    });
+    defer composer.deinit();
+
+    return composer.finalize();
 }
 
 const Options = struct {
-    octave: usize,
+    scales: []const Scale,
     length: usize,
     amplitude: f32,
 
