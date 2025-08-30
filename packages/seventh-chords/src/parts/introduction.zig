@@ -20,35 +20,6 @@ const Options = struct {
 pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
     const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
 
-    var beats = std.ArrayList(WaveInfo).init(allocator);
-    defer beats.deinit();
-
-    for (0..8) |i| {
-        const start_point = samples_per_beat * i;
-
-        try beats.append(.{
-            .wave = Synths.Drum.Bass.generate(allocator, .{
-                .amplitude = options.amplitude,
-
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }),
-            .start_point = start_point,
-        });
-    }
-
-    try beats.append(.{
-        .wave = Synths.Drum.Bass.generate(allocator, .{
-            .amplitude = options.amplitude,
-
-            .sample_rate = options.sample_rate,
-            .channels = options.channels,
-            .bits = options.bits,
-        }),
-        .start_point = samples_per_beat * 9,
-    });
-
     const melodies: []const WaveInfo = &[_]WaveInfo{
         .{
             .wave = Synths.Triangle.Arpeggio.generate(allocator, .{
@@ -83,6 +54,40 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
                 .bits = options.bits,
             }),
             .start_point = samples_per_beat * 4,
+        },
+        .{
+            .wave = Synths.Triangle.Arpeggio.generate(allocator, .{
+                .scales = &[_]Scale{
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .e, .octave = 4 },
+                    .{ .code = .g, .octave = 4 },
+                    .{ .code = .b, .octave = 4 },
+                },
+                .length = samples_per_beat / 2,
+                .duration = samples_per_beat / 2,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }),
+            .start_point = samples_per_beat * 8,
+        },
+        .{
+            .wave = Synths.Triangle.Arpeggio.generate(allocator, .{
+                .scales = &[_]Scale{
+                    .{ .code = .d, .octave = 4 },
+                    .{ .code = .f, .octave = 4 },
+                    .{ .code = .a, .octave = 4 },
+                    .{ .code = .c, .octave = 5 },
+                },
+                .length = samples_per_beat / 2,
+                .duration = samples_per_beat / 2,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }),
+            .start_point = samples_per_beat * 12,
         },
     };
 
@@ -119,9 +124,41 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
             }).filter(decay),
             .start_point = samples_per_beat * 4,
         },
+        .{
+            .wave = Synths.Sine.Chords.generate(allocator, .{
+                .scales = &[_]Scale{
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .e, .octave = 4 },
+                    .{ .code = .g, .octave = 4 },
+                    .{ .code = .b, .octave = 4 },
+                },
+                .length = samples_per_beat * 4,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }).filter(decay),
+            .start_point = samples_per_beat * 8,
+        },
+        .{
+            .wave = Synths.Sine.Chords.generate(allocator, .{
+                .scales = &[_]Scale{
+                    .{ .code = .d, .octave = 4 },
+                    .{ .code = .f, .octave = 4 },
+                    .{ .code = .a, .octave = 4 },
+                    .{ .code = .c, .octave = 5 },
+                },
+                .length = samples_per_beat * 4,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }).filter(decay),
+            .start_point = samples_per_beat * 12,
+        },
     };
 
-    const data: []const WaveInfo = try std.mem.concat(allocator, WaveInfo, &[_][]const WaveInfo{ beats.items, melodies, base_chords });
+    const data: []const WaveInfo = try std.mem.concat(allocator, WaveInfo, &[_][]const WaveInfo{ melodies, base_chords });
     defer allocator.free(data);
 
     const composer: Composer = Composer.init_with(data, allocator, .{
