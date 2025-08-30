@@ -17,7 +17,7 @@ const Options = struct {
     bits: usize,
 };
 
-pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
+pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
     const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
 
     const melodies: []const WaveInfo = &[_]WaveInfo{
@@ -158,7 +158,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
         },
     };
 
-    const data: []const WaveInfo = try std.mem.concat(allocator, WaveInfo, &[_][]const WaveInfo{ melodies, base_chords });
+    const data: []const WaveInfo = std.mem.concat(allocator, WaveInfo, &[_][]const WaveInfo{ melodies, base_chords }) catch @panic("Out of memory");
     defer allocator.free(data);
 
     const composer: Composer = Composer.init_with(data, allocator, .{

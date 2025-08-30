@@ -7,8 +7,8 @@ const WaveInfo = Composer.WaveInfo;
 
 const Parts = @import("./parts.zig");
 
-pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave {
-    const introduction: Wave = try Parts.Introduction.generate(allocator, .{
+pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
+    const introduction: Wave = Parts.Introduction.generate(allocator, .{
         .bpm = options.bpm,
         .amplitude = options.amplitude,
 
