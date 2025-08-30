@@ -22,7 +22,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
 
     const melodies: []const WaveInfo = &[_]WaveInfo{
         .{
-            .wave = Synths.Triangle.Arpeggio.generate(allocator, .{
+            .wave = Synths.Triangle.Equidistant.generate(allocator, .{
                 .scales = &[_]Scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
@@ -39,7 +39,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat * 0,
         },
         .{
-            .wave = Synths.Triangle.Arpeggio.generate(allocator, .{
+            .wave = Synths.Triangle.Equidistant.generate(allocator, .{
                 .scales = &[_]Scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },
@@ -56,7 +56,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat * 4,
         },
         .{
-            .wave = Synths.Triangle.Arpeggio.generate(allocator, .{
+            .wave = Synths.Triangle.Equidistant.generate(allocator, .{
                 .scales = &[_]Scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
@@ -73,7 +73,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat * 8,
         },
         .{
-            .wave = Synths.Triangle.Arpeggio.generate(allocator, .{
+            .wave = Synths.Triangle.Equidistant.generate(allocator, .{
                 .scales = &[_]Scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },

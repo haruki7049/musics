@@ -3,8 +3,7 @@ const lightmix = @import("lightmix");
 
 const Wave = lightmix.Wave;
 
-pub const Chords = @import("./triangle/chords.zig");
-pub const Arpeggio = @import("./triangle/arpeggio.zig");
+pub const Equidistant = @import("./triangle/equidistant.zig");
 
 pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
     const sample_rate: f32 = @floatFromInt(options.sample_rate);
