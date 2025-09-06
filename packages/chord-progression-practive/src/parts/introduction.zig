@@ -24,7 +24,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
     // Key = F
     const base_chords: []const WaveInfo = &[_]WaveInfo{
         .{ // F major
-            .wave = Synths.Sine.Chords.generate(allocator, .{
+            .wave = Synths.Sine.Patterns.Chords.generate(allocator, .{
                 .scales = &[_]Scale{
                     .{ .code = .f, .octave = 3 },
                     .{ .code = .a, .octave = 3 },
@@ -39,7 +39,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat / 2 * 0,
         },
         .{ // F major
-            .wave = Synths.Sine.Chords.generate(allocator, .{
+            .wave = Synths.Sine.Patterns.Chords.generate(allocator, .{
                 .scales = &[_]Scale{
                     .{ .code = .f, .octave = 3 },
                     .{ .code = .a, .octave = 3 },
@@ -54,7 +54,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat / 2 * 1,
         },
         .{ // C major
-            .wave = Synths.Sine.Chords.generate(allocator, .{
+            .wave = Synths.Sine.Patterns.Chords.generate(allocator, .{
                 .scales = &[_]Scale{
                     .{ .code = .c, .octave = 3 },
                     .{ .code = .e, .octave = 3 },
@@ -69,7 +69,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat / 2 * 2,
         },
         .{ // C major
-            .wave = Synths.Sine.Chords.generate(allocator, .{
+            .wave = Synths.Sine.Patterns.Chords.generate(allocator, .{
                 .scales = &[_]Scale{
                     .{ .code = .c, .octave = 3 },
                     .{ .code = .e, .octave = 3 },
@@ -84,7 +84,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat / 2 * 3,
         },
         .{ // D minor
-            .wave = Synths.Sine.Chords.generate(allocator, .{
+            .wave = Synths.Sine.Patterns.Chords.generate(allocator, .{
                 .scales = &[_]Scale{
                     .{ .code = .d, .octave = 3 },
                     .{ .code = .f, .octave = 3 },
@@ -99,7 +99,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat / 2 * 4,
         },
         .{ // D minor
-            .wave = Synths.Sine.Chords.generate(allocator, .{
+            .wave = Synths.Sine.Patterns.Chords.generate(allocator, .{
                 .scales = &[_]Scale{
                     .{ .code = .d, .octave = 3 },
                     .{ .code = .f, .octave = 3 },
@@ -114,7 +114,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat / 2 * 5,
         },
         .{ // D minor seventh
-            .wave = Synths.Sine.Chords.generate(allocator, .{
+            .wave = Synths.Sine.Patterns.Chords.generate(allocator, .{
                 .scales = &[_]Scale{
                     .{ .code = .d, .octave = 3 },
                     .{ .code = .f, .octave = 3 },
@@ -130,7 +130,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat / 2 * 6,
         },
         .{ // D minor seventh
-            .wave = Synths.Sine.Chords.generate(allocator, .{
+            .wave = Synths.Sine.Patterns.Chords.generate(allocator, .{
                 .scales = &[_]Scale{
                     .{ .code = .d, .octave = 3 },
                     .{ .code = .f, .octave = 3 },

@@ -5,8 +5,8 @@ const Wave = lightmix.Wave;
 const Composer = lightmix.Composer;
 const WaveInfo = Composer.WaveInfo;
 
-const Sine = @import("../sine.zig");
-const Scale = @import("../../scale.zig");
+const Sine = @import("../../sine.zig");
+const Scale = @import("../../../scale.zig");
 
 pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
     var wave_list = std.ArrayList(Wave).init(allocator);
