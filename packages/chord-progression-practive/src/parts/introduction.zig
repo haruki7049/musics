@@ -30,59 +30,13 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
                     .{ .code = .a, .octave = 3 },
                     .{ .code = .c, .octave = 4 },
                 },
-                .length = samples_per_beat * 1,
+                .length = samples_per_beat,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
             }).filter(decay),
-            .start_point = samples_per_beat * 0,
-        },
-        .{ // C major
-            .wave = Synths.Sine.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .c, .octave = 3 },
-                    .{ .code = .e, .octave = 3 },
-                    .{ .code = .g, .octave = 3 },
-                },
-                .length = samples_per_beat * 1,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 1,
-        },
-        .{ // D minor
-            .wave = Synths.Sine.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .d, .octave = 3 },
-                    .{ .code = .f, .octave = 3 },
-                    .{ .code = .a, .octave = 3 },
-                },
-                .length = samples_per_beat * 1,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 2,
-        },
-        .{ // D minor seventh
-            .wave = Synths.Sine.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .d, .octave = 3 },
-                    .{ .code = .f, .octave = 3 },
-                    .{ .code = .a, .octave = 3 },
-                    .{ .code = .c, .octave = 4 },
-                },
-                .length = samples_per_beat * 1,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 3,
+            .start_point = samples_per_beat / 2 * 0,
         },
         .{ // F major
             .wave = Synths.Sine.Chords.generate(allocator, .{
@@ -91,13 +45,13 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
                     .{ .code = .a, .octave = 3 },
                     .{ .code = .c, .octave = 4 },
                 },
-                .length = samples_per_beat * 1,
+                .length = samples_per_beat / 2 * 1,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
             }).filter(decay),
-            .start_point = samples_per_beat * 4,
+            .start_point = samples_per_beat / 2 * 1,
         },
         .{ // C major
             .wave = Synths.Sine.Chords.generate(allocator, .{
@@ -106,13 +60,28 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
                     .{ .code = .e, .octave = 3 },
                     .{ .code = .g, .octave = 3 },
                 },
-                .length = samples_per_beat * 1,
+                .length = samples_per_beat,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
             }).filter(decay),
-            .start_point = samples_per_beat * 5,
+            .start_point = samples_per_beat / 2 * 2,
+        },
+        .{ // C major
+            .wave = Synths.Sine.Chords.generate(allocator, .{
+                .scales = &[_]Scale{
+                    .{ .code = .c, .octave = 3 },
+                    .{ .code = .e, .octave = 3 },
+                    .{ .code = .g, .octave = 3 },
+                },
+                .length = samples_per_beat / 2 * 1,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }).filter(decay),
+            .start_point = samples_per_beat / 2 * 3,
         },
         .{ // D minor
             .wave = Synths.Sine.Chords.generate(allocator, .{
@@ -127,7 +96,22 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
                 .channels = options.channels,
                 .bits = options.bits,
             }).filter(decay),
-            .start_point = samples_per_beat * 6,
+            .start_point = samples_per_beat / 2 * 4,
+        },
+        .{ // D minor
+            .wave = Synths.Sine.Chords.generate(allocator, .{
+                .scales = &[_]Scale{
+                    .{ .code = .d, .octave = 3 },
+                    .{ .code = .f, .octave = 3 },
+                    .{ .code = .a, .octave = 3 },
+                },
+                .length = samples_per_beat / 2,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }).filter(decay),
+            .start_point = samples_per_beat / 2 * 5,
         },
         .{ // D minor seventh
             .wave = Synths.Sine.Chords.generate(allocator, .{
@@ -143,52 +127,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
                 .channels = options.channels,
                 .bits = options.bits,
             }).filter(decay),
-            .start_point = samples_per_beat * 7,
-        },
-        .{ // F major
-            .wave = Synths.Sine.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .f, .octave = 3 },
-                    .{ .code = .a, .octave = 3 },
-                    .{ .code = .c, .octave = 4 },
-                },
-                .length = samples_per_beat * 1,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 8,
-        },
-        .{ // C major
-            .wave = Synths.Sine.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .c, .octave = 3 },
-                    .{ .code = .e, .octave = 3 },
-                    .{ .code = .g, .octave = 3 },
-                },
-                .length = samples_per_beat * 1,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 9,
-        },
-        .{ // D minor
-            .wave = Synths.Sine.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .d, .octave = 3 },
-                    .{ .code = .f, .octave = 3 },
-                    .{ .code = .a, .octave = 3 },
-                },
-                .length = samples_per_beat * 1,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 10,
+            .start_point = samples_per_beat / 2 * 6,
         },
         .{ // D minor seventh
             .wave = Synths.Sine.Chords.generate(allocator, .{
@@ -198,74 +137,13 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
                     .{ .code = .a, .octave = 3 },
                     .{ .code = .c, .octave = 4 },
                 },
-                .length = samples_per_beat * 1,
+                .length = samples_per_beat / 2,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
             }).filter(decay),
-            .start_point = samples_per_beat * 11,
-        },
-        .{ // F major
-            .wave = Synths.Sine.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .f, .octave = 3 },
-                    .{ .code = .a, .octave = 3 },
-                    .{ .code = .c, .octave = 4 },
-                },
-                .length = samples_per_beat * 1,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 12,
-        },
-        .{ // C major
-            .wave = Synths.Sine.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .c, .octave = 3 },
-                    .{ .code = .e, .octave = 3 },
-                    .{ .code = .g, .octave = 3 },
-                },
-                .length = samples_per_beat * 1,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 13,
-        },
-        .{ // D minor
-            .wave = Synths.Sine.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .d, .octave = 3 },
-                    .{ .code = .f, .octave = 3 },
-                    .{ .code = .a, .octave = 3 },
-                },
-                .length = samples_per_beat * 1,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 14,
-        },
-        .{ // D minor seventh
-            .wave = Synths.Sine.Chords.generate(allocator, .{
-                .scales = &[_]Scale{
-                    .{ .code = .d, .octave = 3 },
-                    .{ .code = .f, .octave = 3 },
-                    .{ .code = .a, .octave = 3 },
-                    .{ .code = .c, .octave = 4 },
-                },
-                .length = samples_per_beat * 1,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-            }).filter(decay),
-            .start_point = samples_per_beat * 15,
+            .start_point = samples_per_beat / 2 * 7,
         },
     };
 
