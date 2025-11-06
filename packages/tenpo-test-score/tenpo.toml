@@ -1,0 +1,135 @@
+# Header fields
+
+genre = "Test"
+title = "test-score"
+authors = ["haruki7049 <tontonkirikiri@gmail.com>"]
+
+# Score fields
+
+[[scores]]
+key = "Space"
+timing = 0.0
+
+[[scores]]
+key = "Space"
+timing = 0.5
+
+[[scores]]
+key = "Space"
+timing = 1.0
+
+[[scores]]
+key = "Space"
+timing = 1.5
+
+[[scores]]
+key = "Space"
+timing = 2.0
+
+[[scores]]
+key = "Space"
+timing = 2.5
+
+[[scores]]
+key = "Space"
+timing = 3.0
+
+[[scores]]
+key = "Space"
+timing = 3.5
+
+[[scores]]
+key = "Space"
+timing = 4.0
+
+[[scores]]
+key = "Space"
+timing = 4.5
+
+[[scores]]
+key = "Space"
+timing = 5.0
+
+[[scores]]
+key = "Space"
+timing = 5.5
+
+[[scores]]
+key = "Space"
+timing = 6.0
+
+[[scores]]
+key = "Space"
+timing = 6.5
+
+[[scores]]
+key = "Space"
+timing = 7.0
+
+[[scores]]
+key = "Space"
+timing = 7.5
+
+[[scores]]
+key = "Space"
+timing = 8.0
+
+[[scores]]
+key = "Space"
+timing = 8.5
+
+[[scores]]
+key = "Space"
+timing = 9.0
+
+[[scores]]
+key = "Space"
+timing = 9.5
+
+[[scores]]
+key = "Space"
+timing = 10.0
+
+[[scores]]
+key = "Space"
+timing = 10.5
+
+[[scores]]
+key = "Space"
+timing = 11.0
+
+[[scores]]
+key = "Space"
+timing = 11.5
+
+[[scores]]
+key = "Space"
+timing = 12.0
+
+[[scores]]
+key = "Space"
+timing = 12.5
+
+[[scores]]
+key = "Space"
+timing = 13.0
+
+[[scores]]
+key = "Space"
+timing = 13.5
+
+[[scores]]
+key = "Space"
+timing = 14.0
+
+[[scores]]
+key = "Space"
+timing = 14.5
+
+[[scores]]
+key = "Space"
+timing = 15.0
+
+[[scores]]
+key = "Space"
+timing = 15.5
