@@ -27,7 +27,8 @@ pub fn main() !void {
 }
 
 fn normalize(original_wave: Wave) !Wave {
-    var result = std.ArrayList(f32).init(original_wave.allocator);
+    const allocator = original_wave.allocator;
+    var result: std.array_list.Aligned(f32, null) = .empty;
 
     var max_volume: f32 = 0.0;
     for (original_wave.data) |sample| {
@@ -39,12 +40,12 @@ fn normalize(original_wave: Wave) !Wave {
         const volume: f32 = 1.0 / max_volume;
 
         const new_sample: f32 = sample * volume;
-        try result.append(new_sample);
+        try result.append(allocator, new_sample);
     }
 
     return Wave{
-        .data = try result.toOwnedSlice(),
-        .allocator = original_wave.allocator,
+        .data = try result.toOwnedSlice(allocator),
+        .allocator = allocator,
 
         .sample_rate = original_wave.sample_rate,
         .channels = original_wave.channels,

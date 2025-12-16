@@ -9,8 +9,8 @@ const Triangle = @import("../triangle.zig");
 const Scale = @import("../../scale.zig");
 
 pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
-    var wave_list = std.ArrayList(Wave).init(allocator);
-    defer wave_list.deinit();
+    var wave_list: std.array_list.Aligned(Wave, null) = .empty;
+    defer wave_list.deinit(allocator);
 
     for (options.scales) |scale| {
         const wave: Wave = Triangle.generate(allocator, .{
@@ -23,15 +23,15 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .bits = options.bits,
         }).filter(decay);
 
-        wave_list.append(wave) catch @panic("Out of memory");
+        wave_list.append(allocator, wave) catch @panic("Out of memory");
     }
 
-    var waveinfo_list = std.ArrayList(WaveInfo).init(allocator);
-    defer waveinfo_list.deinit();
+    var waveinfo_list: std.array_list.Aligned(WaveInfo, null) = .empty;
+    defer waveinfo_list.deinit(allocator);
 
     var start_point: usize = 0;
     for (wave_list.items) |wave| {
-        waveinfo_list.append(.{ .wave = wave, .start_point = start_point }) catch @panic("Out of memory");
+        waveinfo_list.append(allocator, .{ .wave = wave, .start_point = start_point }) catch @panic("Out of memory");
 
         start_point = start_point + options.duration;
     }
@@ -58,19 +58,20 @@ const Options = struct {
 };
 
 fn decay(original_wave: Wave) !Wave {
-    var result = std.ArrayList(f32).init(original_wave.allocator);
+    const allocator = original_wave.allocator;
+    var result: std.array_list.Aligned(f32, null) = .empty;
 
     for (original_wave.data, 0..) |data, n| {
         const i = original_wave.data.len - n;
         const volume: f32 = @as(f32, @floatFromInt(i)) * (1.0 / @as(f32, @floatFromInt(original_wave.data.len)));
 
         const new_data = data * volume;
-        try result.append(new_data);
+        try result.append(allocator, new_data);
     }
 
     return Wave{
-        .data = try result.toOwnedSlice(),
-        .allocator = original_wave.allocator,
+        .data = try result.toOwnedSlice(allocator),
+        .allocator = allocator,
 
         .sample_rate = original_wave.sample_rate,
         .channels = original_wave.channels,

@@ -9,8 +9,8 @@ const Sine = @import("../sine.zig");
 const Scale = @import("../../scale.zig");
 
 pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
-    var wave_list = std.ArrayList(Wave).init(allocator);
-    defer wave_list.deinit();
+    var wave_list: std.array_list.Aligned(Wave, null) = .empty;
+    defer wave_list.deinit(allocator);
 
     for (options.scales) |scale| {
         const wave: Wave = Sine.generate(allocator, .{
@@ -23,14 +23,14 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .bits = options.bits,
         });
 
-        wave_list.append(wave) catch @panic("Out of memory");
+        wave_list.append(allocator, wave) catch @panic("Out of memory");
     }
 
-    var waveinfo_list = std.ArrayList(WaveInfo).init(allocator);
-    defer waveinfo_list.deinit();
+    var waveinfo_list: std.array_list.Aligned(WaveInfo, null) = .empty;
+    defer waveinfo_list.deinit(allocator);
 
     for (wave_list.items) |wave| {
-        waveinfo_list.append(.{ .wave = wave, .start_point = 0 }) catch @panic("Out of memory");
+        waveinfo_list.append(allocator, .{ .wave = wave, .start_point = 0 }) catch @panic("Out of memory");
     }
 
     const composer: Composer = Composer.init_with(waveinfo_list.items, allocator, .{

@@ -31,12 +31,12 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
     };
     defer allocator.free(attack_data);
 
-    var data = std.ArrayList(f32).init(allocator);
-    defer data.deinit();
+    var data: std.array_list.Aligned(f32, null) = .empty;
+    defer data.deinit(allocator);
 
     for (0..base_data.len) |i| {
         const value: f32 = base_data[i] + attack_data[i];
-        data.append(value) catch @panic("Out of memory");
+        data.append(allocator, value) catch @panic("Out of memory");
     }
 
     const result: Wave = Wave.init(data.items, allocator, .{
@@ -50,31 +50,32 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
 fn generate_sine_data(frequency: f32, amplitude: f32, length: usize, sample_rate: f32, allocator: std.mem.Allocator) []const f32 {
     const radians_per_sec: f32 = frequency * 2.0 * std.math.pi;
 
-    var result = std.ArrayList(f32).init(allocator);
+    var result: std.array_list.Aligned(f32, null) = .empty;
     defer result.deinit();
 
     for (0..length) |i| {
         const v: f32 = std.math.sin(@as(f32, @floatFromInt(i)) * radians_per_sec / sample_rate) * amplitude;
-        result.append(v) catch @panic("Out of memory");
+        result.append(allocator, v) catch @panic("Out of memory");
     }
 
     return result.toOwnedSlice() catch @panic("Out of memory");
 }
 
 fn decay(original_wave: Wave) !Wave {
-    var result = std.ArrayList(f32).init(original_wave.allocator);
+    const allocator = original_wave.allocator;
+    var result: std.array_list.Aligned(f32, null) = .empty;
 
     for (original_wave.data, 0..) |data, n| {
         const i = original_wave.data.len - n;
         const volume: f32 = @as(f32, @floatFromInt(i)) * (1.0 / @as(f32, @floatFromInt(original_wave.data.len)));
 
         const new_data = data * volume;
-        try result.append(new_data);
+        try result.append(allocator, new_data);
     }
 
     return Wave{
-        .data = try result.toOwnedSlice(),
-        .allocator = original_wave.allocator,
+        .data = try result.toOwnedSlice(allocator),
+        .allocator = allocator,
 
         .sample_rate = original_wave.sample_rate,
         .channels = original_wave.channels,
@@ -83,17 +84,18 @@ fn decay(original_wave: Wave) !Wave {
 }
 
 fn staccato(original_wave: Wave) !Wave {
-    var result = std.ArrayList(f32).init(original_wave.allocator);
+    const allocator = original_wave.allocator;
+    var result: std.array_list.Aligned(f32, null) = .empty;
 
     const length: usize = original_wave.data.len / 8;
     for (0..length) |i| {
         const v = original_wave.data[i];
-        try result.append(v);
+        try result.append(allocator, v);
     }
 
     return Wave{
-        .data = try result.toOwnedSlice(),
-        .allocator = original_wave.allocator,
+        .data = try result.toOwnedSlice(allocator),
+        .allocator = allocator,
 
         .sample_rate = original_wave.sample_rate,
         .channels = original_wave.channels,
