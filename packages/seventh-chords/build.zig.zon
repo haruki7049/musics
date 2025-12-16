@@ -2,12 +2,12 @@
     .name = .seventh_chords,
     .version = "0.0.0",
     .fingerprint = 0xd1e0880637c61db9,
-    .minimum_zig_version = "0.14.1",
+    .minimum_zig_version = "0.15.2",
 
     .dependencies = .{
         .lightmix = .{
-            .url = "https://github.com/haruki7049/lightmix/archive/refs/tags/0.2.2.tar.gz",
-            .hash = "lightmix-0.2.2-SpCovCq9AQApAxLDnm0AHaoonqGPiv89yTn-csdk6iJt",
+            .url = "https://github.com/haruki7049/lightmix/archive/refs/tags/0.5.0.tar.gz",
+            .hash = "lightmix-0.5.0-SpCovCXcAQDCP5qGC3rCMfJAi6ob7gwSPSPIooSFhW58",
         },
     },
 
