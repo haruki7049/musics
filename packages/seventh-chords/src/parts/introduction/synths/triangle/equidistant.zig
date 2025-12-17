@@ -6,9 +6,8 @@ const Composer = lightmix.Composer;
 const WaveInfo = Composer.WaveInfo;
 
 const Triangle = @import("../triangle.zig");
-const Scale = @import("../../scale.zig");
 
-pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
+pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Options(Scale)) Wave {
     var wave_list: std.array_list.Aligned(Wave, null) = .empty;
     defer wave_list.deinit(allocator);
 
@@ -46,16 +45,18 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
     return composer.finalize();
 }
 
-const Options = struct {
-    scales: []const Scale,
-    length: usize,
-    duration: usize,
-    amplitude: f32,
+pub fn Options(comptime T: type) type {
+    return struct {
+        scales: []const T,
+        length: usize,
+        duration: usize,
+        amplitude: f32,
 
-    sample_rate: usize,
-    channels: usize,
-    bits: usize,
-};
+        sample_rate: usize,
+        channels: usize,
+        bits: usize,
+    };
+}
 
 fn decay(original_wave: Wave) !Wave {
     const allocator = original_wave.allocator;

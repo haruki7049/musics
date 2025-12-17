@@ -3,12 +3,12 @@ const lightmix = @import("lightmix");
 const seventh_chords = @import("seventh-chords");
 
 const Wave = lightmix.Wave;
-const Scale = seventh_chords.Scale;
+const Scale = @import("./scale.zig");
 
 pub fn main() !void {
     const allocator = std.heap.page_allocator;
 
-    const wave: Wave = seventh_chords.generate(allocator, .{
+    const wave: Wave = seventh_chords.generate(allocator, Scale, .{
         .bpm = 125,
         .amplitude = 1.0,
 

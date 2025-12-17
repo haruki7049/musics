@@ -5,7 +5,6 @@ const Wave = lightmix.Wave;
 const Composer = lightmix.Composer;
 const WaveInfo = Composer.WaveInfo;
 
-const Scale = @import("./introduction/scale.zig");
 const Synths = @import("./introduction/synths.zig");
 
 const Options = struct {
@@ -17,12 +16,12 @@ const Options = struct {
     bits: usize,
 };
 
-pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
+pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Options) Wave {
     const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
 
     const melodies: []const WaveInfo = &[_]WaveInfo{
         .{
-            .wave = Synths.Triangle.Equidistant.generate(allocator, .{
+            .wave = Synths.Triangle.Equidistant.generate(allocator, Scale, .{
                 .scales = &[_]Scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
@@ -39,7 +38,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat * 0,
         },
         .{
-            .wave = Synths.Triangle.Equidistant.generate(allocator, .{
+            .wave = Synths.Triangle.Equidistant.generate(allocator, Scale, .{
                 .scales = &[_]Scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },
@@ -56,7 +55,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat * 4,
         },
         .{
-            .wave = Synths.Triangle.Equidistant.generate(allocator, .{
+            .wave = Synths.Triangle.Equidistant.generate(allocator, Scale, .{
                 .scales = &[_]Scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
@@ -73,7 +72,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat * 8,
         },
         .{
-            .wave = Synths.Triangle.Equidistant.generate(allocator, .{
+            .wave = Synths.Triangle.Equidistant.generate(allocator, Scale, .{
                 .scales = &[_]Scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },
@@ -93,7 +92,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
 
     const base_chords: []const WaveInfo = &[_]WaveInfo{
         .{
-            .wave = Synths.Sine.Chords.generate(allocator, .{
+            .wave = Synths.Sine.Chords.generate(allocator, Scale, .{
                 .scales = &[_]Scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
@@ -109,7 +108,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat * 0,
         },
         .{
-            .wave = Synths.Sine.Chords.generate(allocator, .{
+            .wave = Synths.Sine.Chords.generate(allocator, Scale, .{
                 .scales = &[_]Scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },
@@ -125,7 +124,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat * 4,
         },
         .{
-            .wave = Synths.Sine.Chords.generate(allocator, .{
+            .wave = Synths.Sine.Chords.generate(allocator, Scale, .{
                 .scales = &[_]Scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
@@ -141,7 +140,7 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
             .start_point = samples_per_beat * 8,
         },
         .{
-            .wave = Synths.Sine.Chords.generate(allocator, .{
+            .wave = Synths.Sine.Chords.generate(allocator, Scale, .{
                 .scales = &[_]Scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },
