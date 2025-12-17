@@ -5,24 +5,28 @@ const Wave = lightmix.Wave;
 const Composer = lightmix.Composer;
 const WaveInfo = Composer.WaveInfo;
 
-const Synths = @import("./introduction/synths.zig");
+fn Options(comptime Scale: type, comptime Synths: type, comptime Generators: type) type {
+    return struct {
+        scale: Scale,
+        synths: Synths,
+        generators: Generators,
 
-const Options = struct {
-    bpm: usize,
-    amplitude: f32,
+        bpm: usize,
+        amplitude: f32,
 
-    sample_rate: usize,
-    channels: usize,
-    bits: usize,
-};
+        sample_rate: usize,
+        channels: usize,
+        bits: usize,
+    };
+}
 
-pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Options) Wave {
+pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, type, type)) Wave {
     const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
 
     const melodies: []const WaveInfo = &[_]WaveInfo{
         .{
-            .wave = Synths.Triangle.Equidistant.generate(allocator, Scale, .{
-                .scales = &[_]Scale{
+            .wave = options.generators.Arpeggio.generate(allocator, options.scale, options.synths.Triangle, .{
+                .scales = &[_]options.scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
                     .{ .code = .g, .octave = 4 },
@@ -34,12 +38,15 @@ pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Opt
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
+                .per_sound_filters = &.{
+                    &decay,
+                },
             }),
             .start_point = samples_per_beat * 0,
         },
         .{
-            .wave = Synths.Triangle.Equidistant.generate(allocator, Scale, .{
-                .scales = &[_]Scale{
+            .wave = options.generators.Arpeggio.generate(allocator, options.scale, options.synths.Triangle, .{
+                .scales = &[_]options.scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },
                     .{ .code = .a, .octave = 4 },
@@ -51,12 +58,15 @@ pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Opt
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
+                .per_sound_filters = &.{
+                    &decay,
+                },
             }),
             .start_point = samples_per_beat * 4,
         },
         .{
-            .wave = Synths.Triangle.Equidistant.generate(allocator, Scale, .{
-                .scales = &[_]Scale{
+            .wave = options.generators.Arpeggio.generate(allocator, options.scale, options.synths.Triangle, .{
+                .scales = &[_]options.scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
                     .{ .code = .g, .octave = 4 },
@@ -68,12 +78,15 @@ pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Opt
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
+                .per_sound_filters = &.{
+                    &decay,
+                },
             }),
             .start_point = samples_per_beat * 8,
         },
         .{
-            .wave = Synths.Triangle.Equidistant.generate(allocator, Scale, .{
-                .scales = &[_]Scale{
+            .wave = options.generators.Arpeggio.generate(allocator, options.scale, options.synths.Triangle, .{
+                .scales = &[_]options.scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },
                     .{ .code = .a, .octave = 4 },
@@ -85,6 +98,9 @@ pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Opt
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
+                .per_sound_filters = &.{
+                    &decay,
+                },
             }),
             .start_point = samples_per_beat * 12,
         },
@@ -92,8 +108,8 @@ pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Opt
 
     const base_chords: []const WaveInfo = &[_]WaveInfo{
         .{
-            .wave = Synths.Sine.Chords.generate(allocator, Scale, .{
-                .scales = &[_]Scale{
+            .wave = options.generators.Chords.generate(allocator, options.scale, options.synths.Sine, .{
+                .scales = &[_]options.scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
                     .{ .code = .g, .octave = 4 },
@@ -108,8 +124,8 @@ pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Opt
             .start_point = samples_per_beat * 0,
         },
         .{
-            .wave = Synths.Sine.Chords.generate(allocator, Scale, .{
-                .scales = &[_]Scale{
+            .wave = options.generators.Chords.generate(allocator, options.scale, options.synths.Sine, .{
+                .scales = &[_]options.scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },
                     .{ .code = .a, .octave = 4 },
@@ -124,8 +140,8 @@ pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Opt
             .start_point = samples_per_beat * 4,
         },
         .{
-            .wave = Synths.Sine.Chords.generate(allocator, Scale, .{
-                .scales = &[_]Scale{
+            .wave = options.generators.Chords.generate(allocator, options.scale, options.synths.Sine, .{
+                .scales = &[_]options.scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
                     .{ .code = .g, .octave = 4 },
@@ -140,8 +156,8 @@ pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Opt
             .start_point = samples_per_beat * 8,
         },
         .{
-            .wave = Synths.Sine.Chords.generate(allocator, Scale, .{
-                .scales = &[_]Scale{
+            .wave = options.generators.Chords.generate(allocator, options.scale, options.synths.Sine, .{
+                .scales = &[_]options.scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },
                     .{ .code = .a, .octave = 4 },

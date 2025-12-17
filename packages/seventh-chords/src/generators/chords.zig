@@ -5,17 +5,20 @@ const Wave = lightmix.Wave;
 const Composer = lightmix.Composer;
 const WaveInfo = Composer.WaveInfo;
 
-const Sine = @import("../sine.zig");
-
-pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Options(Scale)) Wave {
+pub fn generate(
+    allocator: std.mem.Allocator,
+    comptime Scale: type,
+    comptime Synth: type,
+    options: Options(Scale),
+) Wave {
     var wave_list: std.array_list.Aligned(Wave, null) = .empty;
     defer wave_list.deinit(allocator);
 
     for (options.scales) |scale| {
-        const wave: Wave = Sine.generate(allocator, .{
+        const wave: Wave = Synth.generate(allocator, .{
             .frequency = scale.generate_freq(),
             .length = options.length,
-            .amplitude = options.amplitude / @as(f32, @floatFromInt(options.scales.len)), // Reduce volume when scales are incremented
+            .amplitude = options.amplitude / @as(f32, @floatFromInt(options.scales.len)),
 
             .sample_rate = options.sample_rate,
             .channels = options.channels,
@@ -42,9 +45,9 @@ pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Opt
     return composer.finalize();
 }
 
-fn Options(comptime T: type) type {
+pub fn Options(comptime ScaleType: type) type {
     return struct {
-        scales: []const T,
+        scales: []const ScaleType,
         length: usize,
         amplitude: f32,
 

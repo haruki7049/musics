@@ -5,14 +5,17 @@ const Wave = lightmix.Wave;
 const Composer = lightmix.Composer;
 const WaveInfo = Composer.WaveInfo;
 
-const Triangle = @import("../triangle.zig");
-
-pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Options(Scale)) Wave {
+pub fn generate(
+    allocator: std.mem.Allocator,
+    comptime Scale: type,
+    comptime Synth: type,
+    comptime options: Options(Scale),
+) Wave {
     var wave_list: std.array_list.Aligned(Wave, null) = .empty;
     defer wave_list.deinit(allocator);
 
     for (options.scales) |scale| {
-        const wave: Wave = Triangle.generate(allocator, .{
+        var result: Wave = Synth.generate(allocator, .{
             .frequency = scale.generate_freq(),
             .length = options.length,
             .amplitude = options.amplitude,
@@ -20,9 +23,13 @@ pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Opt
             .sample_rate = options.sample_rate,
             .channels = options.channels,
             .bits = options.bits,
-        }).filter(decay);
+        });
 
-        wave_list.append(allocator, wave) catch @panic("Out of memory");
+        inline for (options.per_sound_filters) |f| {
+            result = result.filter(f.*);
+        }
+
+        wave_list.append(allocator, result) catch @panic("Out of memory");
     }
 
     var waveinfo_list: std.array_list.Aligned(WaveInfo, null) = .empty;
@@ -45,9 +52,9 @@ pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Opt
     return composer.finalize();
 }
 
-pub fn Options(comptime T: type) type {
+pub fn Options(comptime ScaleType: type) type {
     return struct {
-        scales: []const T,
+        scales: []const ScaleType,
         length: usize,
         duration: usize,
         amplitude: f32,
@@ -55,27 +62,6 @@ pub fn Options(comptime T: type) type {
         sample_rate: usize,
         channels: usize,
         bits: usize,
-    };
-}
-
-fn decay(original_wave: Wave) !Wave {
-    const allocator = original_wave.allocator;
-    var result: std.array_list.Aligned(f32, null) = .empty;
-
-    for (original_wave.data, 0..) |data, n| {
-        const i = original_wave.data.len - n;
-        const volume: f32 = @as(f32, @floatFromInt(i)) * (1.0 / @as(f32, @floatFromInt(original_wave.data.len)));
-
-        const new_data = data * volume;
-        try result.append(allocator, new_data);
-    }
-
-    return Wave{
-        .data = try result.toOwnedSlice(allocator),
-        .allocator = allocator,
-
-        .sample_rate = original_wave.sample_rate,
-        .channels = original_wave.channels,
-        .bits = original_wave.bits,
+        per_sound_filters: []const *const fn (Wave) anyerror!Wave,
     };
 }

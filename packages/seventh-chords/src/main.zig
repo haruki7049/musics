@@ -4,11 +4,17 @@ const seventh_chords = @import("seventh-chords");
 
 const Wave = lightmix.Wave;
 const Scale = @import("./scale.zig");
+const Synths = @import("./synths.zig");
+const Generators = @import("./generators.zig");
 
 pub fn main() !void {
     const allocator = std.heap.page_allocator;
 
-    const wave: Wave = seventh_chords.generate(allocator, Scale, .{
+    const wave: Wave = seventh_chords.generate(allocator, .{
+        .scale = Scale,
+        .synths = Synths,
+        .generators = Generators,
+
         .bpm = 125,
         .amplitude = 1.0,
 

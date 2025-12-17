@@ -3,7 +3,7 @@ const lightmix = @import("lightmix");
 
 const Wave = lightmix.Wave;
 
-pub const Chords = @import("./sine/chords.zig");
+const Self = @This();
 
 pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
     const sample_rate: f32 = @floatFromInt(options.sample_rate);
@@ -33,7 +33,7 @@ fn generate_sine_data(frequency: f32, amplitude: f32, length: usize, sample_rate
     return result.toOwnedSlice(allocator) catch @panic("Out of memory");
 }
 
-const Options = struct {
+pub const Options = struct {
     length: usize,
     frequency: f32,
     amplitude: f32,

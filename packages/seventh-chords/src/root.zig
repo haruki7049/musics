@@ -7,8 +7,12 @@ const WaveInfo = Composer.WaveInfo;
 
 const Parts = @import("./parts.zig");
 
-pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Options) Wave {
-    const introduction: Wave = Parts.Introduction.generate(allocator, Scale, .{
+pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, type, type)) Wave {
+    const introduction: Wave = Parts.Introduction.generate(allocator, .{
+        .scale = options.scale,
+        .synths = options.synths,
+        .generators = options.generators,
+
         .bpm = options.bpm,
         .amplitude = options.amplitude,
 
@@ -20,11 +24,17 @@ pub fn generate(allocator: std.mem.Allocator, comptime Scale: type, options: Opt
     return introduction;
 }
 
-const Options = struct {
-    bpm: usize,
-    amplitude: f32,
+pub fn Options(comptime Scale: type, comptime Synthesizers: type, comptime Generators: type) type {
+    return struct {
+        scale: Scale,
+        synths: Synthesizers,
+        generators: Generators,
 
-    sample_rate: usize,
-    channels: usize,
-    bits: usize,
-};
+        bpm: usize,
+        amplitude: f32,
+
+        sample_rate: usize,
+        channels: usize,
+        bits: usize,
+    };
+}
