@@ -9,13 +9,13 @@ pub fn generate(
     allocator: std.mem.Allocator,
     comptime Scale: type,
     comptime Synth: type,
-    options: Options(Scale),
+    comptime options: Options(Scale),
 ) Wave {
     var wave_list: std.array_list.Aligned(Wave, null) = .empty;
     defer wave_list.deinit(allocator);
 
     for (options.scales) |scale| {
-        const wave: Wave = Synth.generate(allocator, .{
+        var result: Wave = Synth.generate(allocator, .{
             .frequency = scale.generate_freq(),
             .length = options.length,
             .amplitude = options.amplitude / @as(f32, @floatFromInt(options.scales.len)),
@@ -25,7 +25,11 @@ pub fn generate(
             .bits = options.bits,
         });
 
-        wave_list.append(allocator, wave) catch @panic("Out of memory");
+        inline for (options.per_sound_filters) |f| {
+            result = result.filter(f.*);
+        }
+
+        wave_list.append(allocator, result) catch @panic("Out of memory");
     }
 
     var waveinfo_list: std.array_list.Aligned(WaveInfo, null) = .empty;
@@ -54,5 +58,6 @@ pub fn Options(comptime ScaleType: type) type {
         sample_rate: usize,
         channels: usize,
         bits: usize,
+        per_sound_filters: []const *const fn (Wave) anyerror!Wave,
     };
 }

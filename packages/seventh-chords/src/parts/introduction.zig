@@ -120,7 +120,10 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
-            }).filter(decay),
+                .per_sound_filters = &.{
+                    &decay,
+                },
+            }),
             .start_point = samples_per_beat * 0,
         },
         .{
@@ -136,7 +139,10 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
-            }).filter(decay),
+                .per_sound_filters = &.{
+                    &decay,
+                },
+            }),
             .start_point = samples_per_beat * 4,
         },
         .{
@@ -152,7 +158,10 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
-            }).filter(decay),
+                .per_sound_filters = &.{
+                    &decay,
+                },
+            }),
             .start_point = samples_per_beat * 8,
         },
         .{
@@ -168,7 +177,10 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
-            }).filter(decay),
+                .per_sound_filters = &.{
+                    &decay,
+                },
+            }),
             .start_point = samples_per_beat * 12,
         },
     };
