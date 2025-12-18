@@ -69,7 +69,7 @@
             ];
 
             # https://github.com/ziglang/zig/issues/18998
-            shellHook = ''
+            shellHook = lib.strings.optionalString pkgs.stdenv.isDarwin ''
               unset NIX_CFLAGS_COMPILE
               unset NIX_LDFLAGS
             '';
