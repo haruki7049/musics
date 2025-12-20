@@ -1,4 +1,4 @@
-# seventh-chords
+# drumming-uhouho
 
 ```sh
 zig build run
@@ -6,4 +6,4 @@ zig build run
 
 ## Zig version
 
-0.14.1
+0.15.2
