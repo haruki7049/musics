@@ -27,16 +27,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
         .{
             .wave = options.generators.Equidistant.generate(allocator, options.scale, options.synths.Sine, .{
                 .scales = &[_]options.scale{
-                    // C4 for 16 times
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
+                    // C2 for 7 times
                     .{ .code = .c, .octave = 2 },
                     .{ .code = .c, .octave = 2 },
                     .{ .code = .c, .octave = 2 },
@@ -54,6 +45,62 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .per_sound_filters = &.{ &attack, &decay },
             }),
             .start_point = samples_per_beat * 0,
+        },
+        .{
+            .wave = options.generators.Equidistant.generate(allocator, options.scale, options.synths.Sine, .{
+                .scales = &[_]options.scale{
+                    // C2 for 7 times
+                    .{ .code = .c, .octave = 2 },
+                    .{ .code = .c, .octave = 2 },
+                },
+                .length = samples_per_beat,
+                .duration = samples_per_beat / 2,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+                .per_sound_filters = &.{ &attack, &decay },
+            }),
+            .start_point = samples_per_beat * 7,
+        },
+        .{
+            .wave = options.generators.Equidistant.generate(allocator, options.scale, options.synths.Sine, .{
+                .scales = &[_]options.scale{
+                    // C2 for 7 times
+                    .{ .code = .c, .octave = 2 },
+                    .{ .code = .c, .octave = 2 },
+                    .{ .code = .c, .octave = 2 },
+                    .{ .code = .c, .octave = 2 },
+                    .{ .code = .c, .octave = 2 },
+                    .{ .code = .c, .octave = 2 },
+                    .{ .code = .c, .octave = 2 },
+                },
+                .length = samples_per_beat,
+                .duration = samples_per_beat,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+                .per_sound_filters = &.{ &attack, &decay },
+            }),
+            .start_point = samples_per_beat * 8,
+        },
+        .{
+            .wave = options.generators.Equidistant.generate(allocator, options.scale, options.synths.Sine, .{
+                .scales = &[_]options.scale{
+                    // C2 for 7 times
+                    .{ .code = .c, .octave = 2 },
+                    .{ .code = .c, .octave = 2 },
+                },
+                .length = samples_per_beat,
+                .duration = samples_per_beat / 2,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+                .per_sound_filters = &.{ &attack, &decay },
+            }),
+            .start_point = samples_per_beat * 15,
         },
     };
 
