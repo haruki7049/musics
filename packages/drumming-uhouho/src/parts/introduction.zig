@@ -49,7 +49,6 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
         .{
             .wave = options.generators.Equidistant.generate(allocator, options.scale, options.synths.Sine, .{
                 .scales = &[_]options.scale{
-                    // C2 for 7 times
                     .{ .code = .c, .octave = 2 },
                     .{ .code = .c, .octave = 2 },
                 },
@@ -88,7 +87,6 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
         .{
             .wave = options.generators.Equidistant.generate(allocator, options.scale, options.synths.Sine, .{
                 .scales = &[_]options.scale{
-                    // C2 for 7 times
                     .{ .code = .c, .octave = 2 },
                     .{ .code = .c, .octave = 2 },
                 },
