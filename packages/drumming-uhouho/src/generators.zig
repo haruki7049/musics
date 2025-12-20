@@ -1,2 +1,1 @@
-pub const Arpeggio = @import("./generators/arpeggio.zig");
-pub const Chords = @import("./generators/chords.zig");
+pub const Equidistant = @import("./generators/equidistant.zig");

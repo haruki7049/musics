@@ -25,12 +25,25 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
 
     const melodies: []const WaveInfo = &[_]WaveInfo{
         .{
-            .wave = options.generators.Arpeggio.generate(allocator, options.scale, options.synths.Triangle, .{
+            .wave = options.generators.Equidistant.generate(allocator, options.scale, options.synths.Sine, .{
                 .scales = &[_]options.scale{
+                    // C4 for 16 times
                     .{ .code = .c, .octave = 4 },
-                    .{ .code = .e, .octave = 4 },
-                    .{ .code = .g, .octave = 4 },
-                    .{ .code = .b, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
+                    .{ .code = .c, .octave = 4 },
                 },
                 .length = samples_per_beat / 2,
                 .duration = samples_per_beat / 2,
@@ -43,66 +56,6 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 },
             }),
             .start_point = samples_per_beat * 0,
-        },
-        .{
-            .wave = options.generators.Arpeggio.generate(allocator, options.scale, options.synths.Triangle, .{
-                .scales = &[_]options.scale{
-                    .{ .code = .d, .octave = 4 },
-                    .{ .code = .f, .octave = 4 },
-                    .{ .code = .a, .octave = 4 },
-                    .{ .code = .c, .octave = 5 },
-                },
-                .length = samples_per_beat / 2,
-                .duration = samples_per_beat / 2,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-                .per_sound_filters = &.{
-                    &decay,
-                },
-            }),
-            .start_point = samples_per_beat * 4,
-        },
-        .{
-            .wave = options.generators.Arpeggio.generate(allocator, options.scale, options.synths.Triangle, .{
-                .scales = &[_]options.scale{
-                    .{ .code = .c, .octave = 4 },
-                    .{ .code = .e, .octave = 4 },
-                    .{ .code = .g, .octave = 4 },
-                    .{ .code = .b, .octave = 4 },
-                },
-                .length = samples_per_beat / 2,
-                .duration = samples_per_beat / 2,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-                .per_sound_filters = &.{
-                    &decay,
-                },
-            }),
-            .start_point = samples_per_beat * 8,
-        },
-        .{
-            .wave = options.generators.Arpeggio.generate(allocator, options.scale, options.synths.Triangle, .{
-                .scales = &[_]options.scale{
-                    .{ .code = .d, .octave = 4 },
-                    .{ .code = .f, .octave = 4 },
-                    .{ .code = .a, .octave = 4 },
-                    .{ .code = .c, .octave = 5 },
-                },
-                .length = samples_per_beat / 2,
-                .duration = samples_per_beat / 2,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-                .per_sound_filters = &.{
-                    &decay,
-                },
-            }),
-            .start_point = samples_per_beat * 12,
         },
     };
 
