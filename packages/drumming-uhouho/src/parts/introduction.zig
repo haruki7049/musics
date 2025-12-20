@@ -51,7 +51,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
-                .per_sound_filters = &.{ &decay, &decay, &decay },
+                .per_sound_filters = &.{ &attack, &decay },
             }),
             .start_point = samples_per_beat * 0,
         },
@@ -89,14 +89,20 @@ fn decay(original_wave: Wave) !Wave {
     };
 }
 
-fn staccato(original_wave: Wave) !Wave {
+fn attack(original_wave: Wave) !Wave {
     const allocator = original_wave.allocator;
     var result: std.array_list.Aligned(f32, null) = .empty;
 
-    const length: usize = 8000;
-    for (0..length) |i| {
-        const v = original_wave.data[i];
-        try result.append(allocator, v);
+    const length: usize = 6000;
+    for (original_wave.data, 1..) |data, n| {
+        if (n < length) {
+            const percent: f32 = @floatFromInt(n / length);
+            try result.append(allocator, percent * data);
+
+            continue;
+        }
+
+        try result.append(allocator, data);
     }
 
     return Wave{
