@@ -1,0 +1,20 @@
+.{
+    .name = .drumming_uhouho,
+    .version = "0.0.0",
+    .fingerprint = 0x9bed18c700fa5ee5,
+    .minimum_zig_version = "0.15.2",
+
+    .dependencies = .{
+        .lightmix = .{
+            .url = "https://github.com/haruki7049/lightmix/archive/refs/tags/0.5.0.tar.gz",
+            .hash = "lightmix-0.5.0-SpCovCXcAQDCP5qGC3rCMfJAi6ob7gwSPSPIooSFhW58",
+        },
+    },
+
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "README.md",
+    },
+}
