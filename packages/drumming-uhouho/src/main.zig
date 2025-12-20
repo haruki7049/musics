@@ -15,7 +15,7 @@ pub fn main() !void {
         .synths = Synths,
         .generators = Generators,
 
-        .bpm = 125,
+        .bpm = 170,
         .amplitude = 1.0,
 
         .sample_rate = 44100,
