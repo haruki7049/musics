@@ -25,7 +25,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
 
     const melodies: []const WaveInfo = &[_]WaveInfo{
         .{
-            .wave = options.generators.Drum.A.generate(allocator, options.scale, options.synths.Sine, .{
+            .wave = options.generators.Drum.Base.A.generate(allocator, options.scale, options.synths.Sine, .{
                 .scale = .{ .code = .c, .octave = 2 },
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
@@ -36,7 +36,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
             .start_point = samples_per_beat * 0,
         },
         .{
-            .wave = options.generators.Drum.A.generate(allocator, options.scale, options.synths.Sine, .{
+            .wave = options.generators.Drum.Base.A.generate(allocator, options.scale, options.synths.Sine, .{
                 .scale = .{ .code = .c, .octave = 2 },
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
@@ -47,7 +47,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
             .start_point = samples_per_beat * 8,
         },
         .{
-            .wave = options.generators.Drum.A.generate(allocator, options.scale, options.synths.Sine, .{
+            .wave = options.generators.Drum.Base.A.generate(allocator, options.scale, options.synths.Sine, .{
                 .scale = .{ .code = .c, .octave = 2 },
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
@@ -58,7 +58,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
             .start_point = samples_per_beat * 16,
         },
         .{
-            .wave = options.generators.Drum.A.generate(allocator, options.scale, options.synths.Sine, .{
+            .wave = options.generators.Drum.Base.A.generate(allocator, options.scale, options.synths.Sine, .{
                 .scale = .{ .code = .c, .octave = 2 },
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
