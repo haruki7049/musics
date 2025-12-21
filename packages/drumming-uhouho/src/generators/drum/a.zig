@@ -32,7 +32,7 @@ pub fn generate(
             });
 
             // Filters
-            const filters = &.{ &attack, &decay, &decay, &decay };
+            const filters = &.{ &attack, &decay, &decay, &decay, &decay, &decay };
             inline for (filters) |f| {
                 result = result.filter(f.*);
             }
@@ -64,7 +64,7 @@ pub fn generate(
             });
 
             // Filters
-            const filters = &.{ &attack, &decay, &decay, &decay };
+            const filters = &.{ &attack, &decay, &decay, &decay, &decay, &decay };
             inline for (filters) |f| {
                 result = result.filter(f.*);
             }

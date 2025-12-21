@@ -46,6 +46,28 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
             }),
             .start_point = samples_per_beat * 8,
         },
+        .{
+            .wave = options.generators.Drum.A.generate(allocator, options.scale, options.synths.Sine, .{
+                .scale = .{ .code = .c, .octave = 2 },
+                .bpm = options.bpm,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }),
+            .start_point = samples_per_beat * 16,
+        },
+        .{
+            .wave = options.generators.Drum.A.generate(allocator, options.scale, options.synths.Sine, .{
+                .scale = .{ .code = .c, .octave = 2 },
+                .bpm = options.bpm,
+                .amplitude = options.amplitude,
+                .sample_rate = options.sample_rate,
+                .channels = options.channels,
+                .bits = options.bits,
+            }),
+            .start_point = samples_per_beat * 24,
+        },
     };
 
     const composer: Composer = Composer.init_with(melodies, allocator, .{
