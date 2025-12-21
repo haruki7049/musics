@@ -32,7 +32,7 @@ pub fn generate(
             });
 
             // Filters
-            const filters = &.{ &attack, &decay, &decay, &decay, &decay, &decay };
+            const filters = &.{ &cut_attack, &decay, &decay, &decay, &decay, &decay };
             inline for (filters) |f| {
                 result = result.filter(f.*);
             }
@@ -64,7 +64,7 @@ pub fn generate(
             });
 
             // Filters
-            const filters = &.{ &attack, &decay, &decay, &decay, &decay, &decay };
+            const filters = &.{ &cut_attack, &decay, &decay, &decay, &decay, &decay };
             inline for (filters) |f| {
                 result = result.filter(f.*);
             }
@@ -125,11 +125,11 @@ fn decay(original_wave: Wave) !Wave {
     };
 }
 
-fn attack(original_wave: Wave) !Wave {
+fn cut_attack(original_wave: Wave) !Wave {
     const allocator = original_wave.allocator;
     var result: std.array_list.Aligned(f32, null) = .empty;
 
-    const length: usize = 6000;
+    const length: usize = 100;
     for (original_wave.data, 1..) |data, n| {
         if (n < length) {
             const percent: f32 = @floatFromInt(n / length);
