@@ -19,7 +19,7 @@ pub fn generate(
         var wave_list: std.array_list.Aligned(Wave, null) = .empty;
         defer wave_list.deinit(allocator);
 
-        for (0..4) |_| {
+        for (0..8) |_| {
             var result: Wave = undefined;
 
             switch (options.state) {
