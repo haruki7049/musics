@@ -25,80 +25,26 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
 
     const melodies: []const WaveInfo = &[_]WaveInfo{
         .{
-            .wave = options.generators.Equidistant.generate(allocator, options.scale, options.synths.Sine, .{
-                .scales = &[_]options.scale{
-                    // C2 for 7 times
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                },
-                .length = samples_per_beat,
-                .duration = samples_per_beat,
+            .wave = options.generators.Drum.A.generate(allocator, options.scale, options.synths.Sine, .{
+                .scale = .{ .code = .c, .octave = 2 },
+                .bpm = options.bpm,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
-                .per_sound_filters = &.{ &attack, &decay },
             }),
             .start_point = samples_per_beat * 0,
         },
         .{
-            .wave = options.generators.Equidistant.generate(allocator, options.scale, options.synths.Sine, .{
-                .scales = &[_]options.scale{
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                },
-                .length = samples_per_beat,
-                .duration = samples_per_beat / 2,
+            .wave = options.generators.Drum.A.generate(allocator, options.scale, options.synths.Sine, .{
+                .scale = .{ .code = .c, .octave = 2 },
+                .bpm = options.bpm,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
                 .bits = options.bits,
-                .per_sound_filters = &.{ &attack, &decay },
-            }),
-            .start_point = samples_per_beat * 7,
-        },
-        .{
-            .wave = options.generators.Equidistant.generate(allocator, options.scale, options.synths.Sine, .{
-                .scales = &[_]options.scale{
-                    // C2 for 7 times
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                },
-                .length = samples_per_beat,
-                .duration = samples_per_beat,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-                .per_sound_filters = &.{ &attack, &decay },
             }),
             .start_point = samples_per_beat * 8,
-        },
-        .{
-            .wave = options.generators.Equidistant.generate(allocator, options.scale, options.synths.Sine, .{
-                .scales = &[_]options.scale{
-                    .{ .code = .c, .octave = 2 },
-                    .{ .code = .c, .octave = 2 },
-                },
-                .length = samples_per_beat,
-                .duration = samples_per_beat / 2,
-                .amplitude = options.amplitude,
-                .sample_rate = options.sample_rate,
-                .channels = options.channels,
-                .bits = options.bits,
-                .per_sound_filters = &.{ &attack, &decay },
-            }),
-            .start_point = samples_per_beat * 15,
         },
     };
 
@@ -110,52 +56,4 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
     defer composer.deinit();
 
     return composer.finalize();
-}
-
-fn decay(original_wave: Wave) !Wave {
-    const allocator = original_wave.allocator;
-    var result: std.array_list.Aligned(f32, null) = .empty;
-
-    for (original_wave.data, 0..) |data, n| {
-        const i = original_wave.data.len - n;
-        const volume: f32 = @as(f32, @floatFromInt(i)) * (1.0 / @as(f32, @floatFromInt(original_wave.data.len)));
-
-        const new_data = data * volume;
-        try result.append(allocator, new_data);
-    }
-
-    return Wave{
-        .data = try result.toOwnedSlice(allocator),
-        .allocator = allocator,
-
-        .sample_rate = original_wave.sample_rate,
-        .channels = original_wave.channels,
-        .bits = original_wave.bits,
-    };
-}
-
-fn attack(original_wave: Wave) !Wave {
-    const allocator = original_wave.allocator;
-    var result: std.array_list.Aligned(f32, null) = .empty;
-
-    const length: usize = 6000;
-    for (original_wave.data, 1..) |data, n| {
-        if (n < length) {
-            const percent: f32 = @floatFromInt(n / length);
-            try result.append(allocator, percent * data);
-
-            continue;
-        }
-
-        try result.append(allocator, data);
-    }
-
-    return Wave{
-        .data = try result.toOwnedSlice(allocator),
-        .allocator = allocator,
-
-        .sample_rate = original_wave.sample_rate,
-        .channels = original_wave.channels,
-        .bits = original_wave.bits,
-    };
 }
