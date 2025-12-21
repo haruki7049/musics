@@ -18,7 +18,6 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
         .bits = options.bits,
     })
         .filter(attack)
-        .filter(decay)
         .filter(decay);
 
     return result;
