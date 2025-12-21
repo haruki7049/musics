@@ -75,7 +75,7 @@ fn attack(original_wave: Wave) !Wave {
     const allocator = original_wave.allocator;
     var result: std.array_list.Aligned(f32, null) = .empty;
 
-    const length: usize = 2000;
+    const length: usize = 100;
     for (original_wave.data, 1..) |data, n| {
         if (n < length) {
             const percent: f32 = @as(f32, @floatFromInt(n)) / @as(f32, @floatFromInt(length));
