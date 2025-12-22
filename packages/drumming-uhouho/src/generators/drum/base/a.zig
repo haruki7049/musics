@@ -32,7 +32,15 @@ pub fn generate(
             });
 
             // Filters
-            const filters = &.{ &cut_attack, &decay, &decay, &decay, &decay, &decay };
+            const filters = &.{
+                &cut_attack,
+                &decay,
+                &decay,
+                &decay,
+                &decay,
+                &decay,
+                &decay,
+            };
             inline for (filters) |f| {
                 result = result.filter(f.*);
             }
@@ -64,7 +72,15 @@ pub fn generate(
             });
 
             // Filters
-            const filters = &.{ &cut_attack, &decay, &decay, &decay, &decay, &decay };
+            const filters = &.{
+                &cut_attack,
+                &decay,
+                &decay,
+                &decay,
+                &decay,
+                &decay,
+                &decay,
+            };
             inline for (filters) |f| {
                 result = result.filter(f.*);
             }
