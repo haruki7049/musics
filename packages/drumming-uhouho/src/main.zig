@@ -7,7 +7,7 @@ const Scale = @import("./scale.zig");
 const Synths = @import("./synths.zig");
 const Generators = @import("./generators.zig");
 
-const bit_type = .f32;
+const bit_type = .i16;
 
 pub fn main() !void {
     const allocator = std.heap.page_allocator;
