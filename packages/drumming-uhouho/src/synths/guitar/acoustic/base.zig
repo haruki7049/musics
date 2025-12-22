@@ -19,7 +19,6 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
     const result: Wave = Wave.init(base_data, allocator, .{
         .sample_rate = options.sample_rate,
         .channels = options.channels,
-        .bits = options.bits,
     });
 
     return result;
@@ -73,5 +72,4 @@ pub const Options = struct {
 
     sample_rate: usize,
     channels: usize,
-    bits: usize,
 };

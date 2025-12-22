@@ -16,7 +16,6 @@ fn Options(comptime Scale: type, comptime Synths: type, comptime Generators: typ
 
         sample_rate: usize,
         channels: usize,
-        bits: usize,
     };
 }
 
@@ -31,7 +30,6 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .bits = options.bits,
             }),
             .start_point = samples_per_beat * 0,
         },
@@ -42,7 +40,6 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .bits = options.bits,
             }),
             .start_point = samples_per_beat * 8,
         },
@@ -53,7 +50,6 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .bits = options.bits,
             }),
             .start_point = samples_per_beat * 16,
         },
@@ -64,7 +60,6 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .state = .closed,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .bits = options.bits,
             }),
             .start_point = samples_per_beat * 16,
         },
@@ -75,7 +70,6 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .bits = options.bits,
             }),
             .start_point = samples_per_beat * 24,
         },
@@ -86,7 +80,6 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .state = .closed,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .bits = options.bits,
             }),
             .start_point = samples_per_beat * 24,
         },
@@ -95,7 +88,6 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
     const composer: Composer = Composer.init_with(melodies, allocator, .{
         .sample_rate = options.sample_rate,
         .channels = options.channels,
-        .bits = options.bits,
     });
     defer composer.deinit();
 

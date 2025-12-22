@@ -28,7 +28,6 @@ pub fn generate(
 
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .bits = options.bits,
             });
 
             // Filters
@@ -68,7 +67,6 @@ pub fn generate(
 
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .bits = options.bits,
             });
 
             // Filters
@@ -99,7 +97,6 @@ pub fn generate(
     const composer: Composer = Composer.init_with(waveinfo_list.items, allocator, .{
         .sample_rate = options.sample_rate,
         .channels = options.channels,
-        .bits = options.bits,
     });
     defer composer.deinit();
 
@@ -115,7 +112,6 @@ pub fn Options(comptime ScaleType: type) type {
 
         sample_rate: usize,
         channels: usize,
-        bits: usize,
     };
 }
 
@@ -137,7 +133,6 @@ fn decay(original_wave: Wave) !Wave {
 
         .sample_rate = original_wave.sample_rate,
         .channels = original_wave.channels,
-        .bits = original_wave.bits,
     };
 }
 
@@ -163,6 +158,5 @@ fn cut_attack(original_wave: Wave) !Wave {
 
         .sample_rate = original_wave.sample_rate,
         .channels = original_wave.channels,
-        .bits = original_wave.bits,
     };
 }

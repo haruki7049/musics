@@ -29,7 +29,6 @@ pub fn generate(
 
                         .sample_rate = options.sample_rate,
                         .channels = options.channels,
-                        .bits = options.bits,
                     });
                 },
                 .opened => {
@@ -38,7 +37,6 @@ pub fn generate(
 
                         .sample_rate = options.sample_rate,
                         .channels = options.channels,
-                        .bits = options.bits,
                     });
                 },
             }
@@ -57,7 +55,6 @@ pub fn generate(
     const composer: Composer = Composer.init_with(waveinfo_list.items, allocator, .{
         .sample_rate = options.sample_rate,
         .channels = options.channels,
-        .bits = options.bits,
     });
     defer composer.deinit();
 
@@ -71,7 +68,6 @@ pub const Options = struct {
 
     sample_rate: usize,
     channels: usize,
-    bits: usize,
 };
 
 const HighHatState = enum {

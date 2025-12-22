@@ -15,7 +15,6 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
     const result: Wave = Wave.init(base_data, allocator, .{
         .sample_rate = options.sample_rate,
         .channels = options.channels,
-        .bits = options.bits,
     })
         .filter(attack)
         .filter(decay)
@@ -47,7 +46,6 @@ pub const Options = struct {
 
     sample_rate: usize,
     channels: usize,
-    bits: usize,
 };
 
 fn decay(original_wave: Wave) !Wave {
@@ -67,7 +65,6 @@ fn decay(original_wave: Wave) !Wave {
 
         .sample_rate = original_wave.sample_rate,
         .channels = original_wave.channels,
-        .bits = original_wave.bits,
     };
 }
 
@@ -93,6 +90,5 @@ fn attack(original_wave: Wave) !Wave {
 
         .sample_rate = original_wave.sample_rate,
         .channels = original_wave.channels,
-        .bits = original_wave.bits,
     };
 }

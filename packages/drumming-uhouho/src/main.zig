@@ -7,6 +7,8 @@ const Scale = @import("./scale.zig");
 const Synths = @import("./synths.zig");
 const Generators = @import("./generators.zig");
 
+const bit_type = .f32;
+
 pub fn main() !void {
     const allocator = std.heap.page_allocator;
 
@@ -20,16 +22,15 @@ pub fn main() !void {
 
         .sample_rate = 44100,
         .channels = 1,
-        .bits = 16,
     }).filter(normalize);
     defer wave.deinit();
 
     var file = try std.fs.cwd().createFile("result.wav", .{});
     defer file.close();
 
-    try wave.write(file, .f32);
+    try wave.write(file, bit_type);
 
-    try wave.debug_play(.f32);
+    try wave.debug_play(bit_type);
 }
 
 fn normalize(original_wave: Wave) !Wave {
@@ -55,6 +56,5 @@ fn normalize(original_wave: Wave) !Wave {
 
         .sample_rate = original_wave.sample_rate,
         .channels = original_wave.channels,
-        .bits = original_wave.bits,
     };
 }
