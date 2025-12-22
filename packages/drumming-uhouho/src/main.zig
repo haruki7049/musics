@@ -27,9 +27,9 @@ pub fn main() !void {
     var file = try std.fs.cwd().createFile("result.wav", .{});
     defer file.close();
 
-    try wave.write(file);
+    try wave.write(file, .f32);
 
-    try wave.debug_play();
+    try wave.debug_play(.f32);
 }
 
 fn normalize(original_wave: Wave) !Wave {
