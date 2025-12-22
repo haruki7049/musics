@@ -22,7 +22,7 @@ fn Options(comptime Scale: type, comptime Synths: type, comptime Generators: typ
 pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, type, type)) Wave {
     const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
 
-    const melodies: []const WaveInfo = &[_]WaveInfo{
+    const melodies: []const WaveInfo = &.{
         .{
             .wave = options.generators.Drum.Base.A.generate(allocator, options.scale, options.synths.Sine, .{
                 .scale = .{ .code = .c, .octave = 2 },
