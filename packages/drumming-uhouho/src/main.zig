@@ -39,8 +39,8 @@ fn normalize(original_wave: Wave) !Wave {
 
     var max_volume: f32 = 0.0;
     for (original_wave.data) |sample| {
-        if (sample > max_volume)
-            max_volume = sample;
+        if (@abs(sample) > max_volume)
+            max_volume = @abs(sample);
     }
 
     for (original_wave.data) |sample| {
