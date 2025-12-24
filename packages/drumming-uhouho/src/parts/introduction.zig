@@ -91,5 +91,5 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
     });
     defer composer.deinit();
 
-    return composer.finalize();
+    return composer.finalize(.{});
 }

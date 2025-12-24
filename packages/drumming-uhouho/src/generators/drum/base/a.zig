@@ -100,7 +100,7 @@ pub fn generate(
     });
     defer composer.deinit();
 
-    return composer.finalize();
+    return composer.finalize(.{});
 }
 
 pub fn Options(comptime ScaleType: type) type {

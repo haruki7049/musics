@@ -58,7 +58,7 @@ pub fn generate(
     });
     defer composer.deinit();
 
-    return composer.finalize();
+    return composer.finalize(.{});
 }
 
 pub const Options = struct {
