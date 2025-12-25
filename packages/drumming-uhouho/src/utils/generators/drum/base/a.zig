@@ -26,17 +26,18 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
             });
 
             // Filters
-            const filters = &.{
-                &cut_attack,
-                &decay,
-                &decay,
-                &decay,
-                &decay,
-                &decay,
-                &decay,
-            };
-            inline for (filters) |f| {
-                result = result.filter(f.*);
+            const cutAttackOptions = options.utils.Filters.Volume.cutAttackOptions;
+            const cut_attack = options.utils.Filters.Volume.cut_attack;
+
+            for (0..1) |_| {
+                result = result.filter_with(cutAttackOptions, cut_attack, .{});
+            }
+
+            const decayOptions = options.utils.Filters.Volume.decayOptions;
+            const decay = options.utils.Filters.Volume.decay;
+
+            for (0..6) |_| {
+                result = result.filter_with(decayOptions, decay, .{});
             }
 
             wave_list.append(allocator, result) catch @panic("Out of memory");
@@ -65,17 +66,18 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
             });
 
             // Filters
-            const filters = &.{
-                &cut_attack,
-                &decay,
-                &decay,
-                &decay,
-                &decay,
-                &decay,
-                &decay,
-            };
-            inline for (filters) |f| {
-                result = result.filter(f.*);
+            const cutAttackOptions = options.utils.Filters.Volume.cutAttackOptions;
+            const cut_attack = options.utils.Filters.Volume.cut_attack;
+
+            for (0..1) |_| {
+                result = result.filter_with(cutAttackOptions, cut_attack, .{});
+            }
+
+            const decayOptions = options.utils.Filters.Volume.decayOptions;
+            const decay = options.utils.Filters.Volume.decay;
+
+            for (0..6) |_| {
+                result = result.filter_with(decayOptions, decay, .{});
             }
 
             wave_list.append(allocator, result) catch @panic("Out of memory");
@@ -107,51 +109,5 @@ pub fn Options(comptime Utils: type) type {
         amplitude: f32,
         sample_rate: usize,
         channels: usize,
-    };
-}
-
-fn decay(original_wave: Wave) !Wave {
-    const allocator = original_wave.allocator;
-    var result: std.array_list.Aligned(f32, null) = .empty;
-
-    for (original_wave.data, 0..) |data, n| {
-        const i = original_wave.data.len - n;
-        const volume: f32 = @as(f32, @floatFromInt(i)) * (1.0 / @as(f32, @floatFromInt(original_wave.data.len)));
-
-        const new_data = data * volume;
-        try result.append(allocator, new_data);
-    }
-
-    return Wave{
-        .data = try result.toOwnedSlice(allocator),
-        .allocator = allocator,
-
-        .sample_rate = original_wave.sample_rate,
-        .channels = original_wave.channels,
-    };
-}
-
-fn cut_attack(original_wave: Wave) !Wave {
-    const allocator = original_wave.allocator;
-    var result: std.array_list.Aligned(f32, null) = .empty;
-
-    const length: usize = 100;
-    for (original_wave.data, 1..) |data, n| {
-        if (n < length) {
-            const percent: f32 = @floatFromInt(n / length);
-            try result.append(allocator, percent * data);
-
-            continue;
-        }
-
-        try result.append(allocator, data);
-    }
-
-    return Wave{
-        .data = try result.toOwnedSlice(allocator),
-        .allocator = allocator,
-
-        .sample_rate = original_wave.sample_rate,
-        .channels = original_wave.channels,
     };
 }
