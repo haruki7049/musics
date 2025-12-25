@@ -5,11 +5,9 @@ const Wave = lightmix.Wave;
 const Composer = lightmix.Composer;
 const WaveInfo = Composer.WaveInfo;
 
-fn Options(comptime Scale: type, comptime Synths: type, comptime Generators: type) type {
+fn Options(comptime Utils: type) type {
     return struct {
-        scale: Scale,
-        synths: Synths,
-        generators: Generators,
+        utils: Utils,
 
         bpm: usize,
         amplitude: f32,
@@ -19,12 +17,12 @@ fn Options(comptime Scale: type, comptime Synths: type, comptime Generators: typ
     };
 }
 
-pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, type, type)) Wave {
+pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) Wave {
     const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
 
     const melodies: []const WaveInfo = &.{
         .{
-            .wave = options.generators.Drum.Base.A.generate(allocator, options.scale, options.synths.Sine, .{
+            .wave = options.utils.Generators.Drum.Base.A.generate(allocator, options.utils.Scale, options.utils.Synths.Sine, .{
                 .scale = .{ .code = .c, .octave = 2 },
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
@@ -34,7 +32,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
             .start_point = samples_per_beat * 0,
         },
         .{
-            .wave = options.generators.Drum.Base.A.generate(allocator, options.scale, options.synths.Sine, .{
+            .wave = options.utils.Generators.Drum.Base.A.generate(allocator, options.utils.Scale, options.utils.Synths.Sine, .{
                 .scale = .{ .code = .c, .octave = 2 },
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
@@ -44,7 +42,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
             .start_point = samples_per_beat * 8,
         },
         .{
-            .wave = options.generators.Drum.Base.A.generate(allocator, options.scale, options.synths.Sine, .{
+            .wave = options.utils.Generators.Drum.Base.A.generate(allocator, options.utils.Scale, options.utils.Synths.Sine, .{
                 .scale = .{ .code = .c, .octave = 2 },
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
@@ -54,7 +52,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
             .start_point = samples_per_beat * 16,
         },
         .{
-            .wave = options.generators.Drum.HighHat.OffBeats.generate(allocator, options.synths, .{
+            .wave = options.utils.Generators.Drum.HighHat.OffBeats.generate(allocator, options.utils.Synths, .{
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
                 .state = .closed,
@@ -64,7 +62,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
             .start_point = samples_per_beat * 16,
         },
         .{
-            .wave = options.generators.Drum.Base.A.generate(allocator, options.scale, options.synths.Sine, .{
+            .wave = options.utils.Generators.Drum.Base.A.generate(allocator, options.utils.Scale, options.utils.Synths.Sine, .{
                 .scale = .{ .code = .c, .octave = 2 },
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
@@ -74,7 +72,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
             .start_point = samples_per_beat * 24,
         },
         .{
-            .wave = options.generators.Drum.HighHat.OffBeats.generate(allocator, options.synths, .{
+            .wave = options.utils.Generators.Drum.HighHat.OffBeats.generate(allocator, options.utils.Synths, .{
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
                 .state = .closed,

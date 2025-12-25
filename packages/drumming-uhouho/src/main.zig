@@ -3,9 +3,7 @@ const lightmix = @import("lightmix");
 const drumming_uhouho = @import("drumming-uhouho");
 
 const Wave = lightmix.Wave;
-const Scale = @import("./scale.zig");
-const Synths = @import("./synths.zig");
-const Generators = @import("./generators.zig");
+const Utils = @import("./utils.zig");
 
 const bit_type = .i16;
 
@@ -13,9 +11,7 @@ pub fn main() !void {
     const allocator = std.heap.page_allocator;
 
     const wave: Wave = drumming_uhouho.generate(allocator, .{
-        .scale = Scale,
-        .synths = Synths,
-        .generators = Generators,
+        .utils = Utils,
 
         .bpm = 170,
         .amplitude = 1.0,
