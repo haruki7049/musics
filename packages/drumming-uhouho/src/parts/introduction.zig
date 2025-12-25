@@ -22,8 +22,9 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
 
     const melodies: []const WaveInfo = &.{
         .{
-            .wave = options.utils.Generators.Drum.Base.A.generate(allocator, options.utils.Scale, options.utils.Synths.Sine, .{
-                .scale = .{ .code = .c, .octave = 2 },
+            .wave = options.utils.Generators.Drum.Base.A.generate(allocator, .{
+                .utils = options.utils,
+                .frequency = options.utils.Scale.generate_freq(.{ .code = .c, .octave = 2 }),
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
@@ -32,8 +33,9 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
             .start_point = samples_per_beat * 0,
         },
         .{
-            .wave = options.utils.Generators.Drum.Base.A.generate(allocator, options.utils.Scale, options.utils.Synths.Sine, .{
-                .scale = .{ .code = .c, .octave = 2 },
+            .wave = options.utils.Generators.Drum.Base.A.generate(allocator, .{
+                .utils = options.utils,
+                .frequency = options.utils.Scale.generate_freq(.{ .code = .c, .octave = 2 }),
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
@@ -42,8 +44,9 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
             .start_point = samples_per_beat * 8,
         },
         .{
-            .wave = options.utils.Generators.Drum.Base.A.generate(allocator, options.utils.Scale, options.utils.Synths.Sine, .{
-                .scale = .{ .code = .c, .octave = 2 },
+            .wave = options.utils.Generators.Drum.Base.A.generate(allocator, .{
+                .utils = options.utils,
+                .frequency = options.utils.Scale.generate_freq(.{ .code = .c, .octave = 2 }),
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
@@ -62,8 +65,9 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
             .start_point = samples_per_beat * 16,
         },
         .{
-            .wave = options.utils.Generators.Drum.Base.A.generate(allocator, options.utils.Scale, options.utils.Synths.Sine, .{
-                .scale = .{ .code = .c, .octave = 2 },
+            .wave = options.utils.Generators.Drum.Base.A.generate(allocator, .{
+                .utils = options.utils,
+                .frequency = options.utils.Scale.generate_freq(.{ .code = .c, .octave = 2 }),
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,

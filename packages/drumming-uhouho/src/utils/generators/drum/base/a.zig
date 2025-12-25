@@ -5,12 +5,7 @@ const Wave = lightmix.Wave;
 const Composer = lightmix.Composer;
 const WaveInfo = Composer.WaveInfo;
 
-pub fn generate(
-    allocator: std.mem.Allocator,
-    comptime Scale: type,
-    comptime Synth: type,
-    comptime options: Options(Scale),
-) Wave {
+pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) Wave {
     const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
 
     var waveinfo_list: std.array_list.Aligned(WaveInfo, null) = .empty;
@@ -21,8 +16,8 @@ pub fn generate(
         defer wave_list.deinit(allocator);
 
         for (0..7) |_| {
-            var result: Wave = Synth.generate(allocator, .{
-                .frequency = options.scale.generate_freq(),
+            var result: Wave = options.utils.Synths.Sine.generate(allocator, .{
+                .frequency = options.frequency,
                 .length = samples_per_beat,
                 .amplitude = options.amplitude,
 
@@ -60,8 +55,8 @@ pub fn generate(
         defer wave_list.deinit(allocator);
 
         for (0..2) |_| {
-            var result: Wave = Synth.generate(allocator, .{
-                .frequency = options.scale.generate_freq(),
+            var result: Wave = options.utils.Synths.Sine.generate(allocator, .{
+                .frequency = options.frequency,
                 .length = samples_per_beat,
                 .amplitude = options.amplitude,
 
@@ -103,13 +98,13 @@ pub fn generate(
     return composer.finalize(.{});
 }
 
-pub fn Options(comptime ScaleType: type) type {
+pub fn Options(comptime Utils: type) type {
     return struct {
-        scale: ScaleType,
+        utils: Utils,
 
         bpm: usize,
+        frequency: f32,
         amplitude: f32,
-
         sample_rate: usize,
         channels: usize,
     };
