@@ -55,7 +55,8 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
             .start_point = samples_per_beat * 16,
         },
         .{
-            .wave = options.utils.Generators.Drum.HighHat.OffBeats.generate(allocator, options.utils.Synths, .{
+            .wave = options.utils.Generators.Drum.HighHat.OffBeats.generate(allocator, .{
+                .utils = options.utils,
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
                 .state = .closed,
@@ -76,7 +77,8 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
             .start_point = samples_per_beat * 24,
         },
         .{
-            .wave = options.utils.Generators.Drum.HighHat.OffBeats.generate(allocator, options.utils.Synths, .{
+            .wave = options.utils.Generators.Drum.HighHat.OffBeats.generate(allocator, .{
+                .utils = options.utils,
                 .bpm = options.bpm,
                 .amplitude = options.amplitude,
                 .state = .closed,

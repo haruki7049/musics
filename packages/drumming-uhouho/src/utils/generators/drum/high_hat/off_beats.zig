@@ -5,11 +5,7 @@ const Wave = lightmix.Wave;
 const Composer = lightmix.Composer;
 const WaveInfo = Composer.WaveInfo;
 
-pub fn generate(
-    allocator: std.mem.Allocator,
-    comptime Synths: type,
-    options: Options,
-) Wave {
+pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) Wave {
     const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
 
     var waveinfo_list: std.array_list.Aligned(WaveInfo, null) = .empty;
@@ -24,7 +20,7 @@ pub fn generate(
 
             switch (options.state) {
                 .closed => {
-                    result = Synths.HighHat.Closed.generate(allocator, .{
+                    result = options.utils.Synths.HighHat.Closed.generate(allocator, .{
                         .amplitude = options.amplitude,
 
                         .sample_rate = options.sample_rate,
@@ -32,7 +28,7 @@ pub fn generate(
                     });
                 },
                 .opened => {
-                    result = Synths.HighHat.Opened.generate(allocator, .{
+                    result = options.utils.Synths.HighHat.Opened.generate(allocator, .{
                         .amplitude = options.amplitude,
 
                         .sample_rate = options.sample_rate,
@@ -61,14 +57,18 @@ pub fn generate(
     return composer.finalize(.{});
 }
 
-pub const Options = struct {
-    bpm: usize,
-    amplitude: f32,
-    state: HighHatState,
+pub fn Options(comptime Utils: type) type {
+    return struct {
+        utils: Utils,
 
-    sample_rate: usize,
-    channels: usize,
-};
+        bpm: usize,
+        amplitude: f32,
+        state: HighHatState,
+
+        sample_rate: usize,
+        channels: usize,
+    };
+}
 
 const HighHatState = enum {
     closed,
