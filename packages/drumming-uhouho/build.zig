@@ -1,6 +1,8 @@
 const std = @import("std");
 const lightmix = @import("lightmix");
 
+const bit_type = .i16;
+
 pub fn build(b: *std.Build) !void {
     // `zig build` code block
     {
@@ -17,7 +19,7 @@ pub fn build(b: *std.Build) !void {
         }).filter(normalize);
 
         const wave_install_file: *std.Build.Step.InstallFile = try lightmix.addWaveInstallFile(b, wave, .{
-            .wave = .{ .name = "result.wav", .bit_type = .i16 },
+            .wave = .{ .name = "result.wav", .bit_type = bit_type },
             .path = .{ .custom = "share" },
         });
 
