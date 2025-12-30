@@ -6,8 +6,8 @@
 
     .dependencies = .{
         .lightmix = .{
-            .url = "https://github.com/haruki7049/lightmix/archive/refs/tags/0.10.0.tar.gz",
-            .hash = "lightmix-0.10.0-SpCovG95AgC77rmj4c2saquzjp6zsgc_W-B116FWgaJA",
+            .url = "https://github.com/haruki7049/lightmix/archive/3d3477d2b958766404bbfc4ef905b5aacc5559b7.tar.gz",
+            .hash = "lightmix-0.10.0-SpCovKN5AgBK8EX-K79zyzzEKObvFdWljx43Ct4LVFUe",
         },
     },
 
