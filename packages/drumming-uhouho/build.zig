@@ -4,7 +4,7 @@ const lightmix = @import("lightmix");
 const bit_type = .i16;
 
 pub fn build(b: *std.Build) !void {
-    // `zig build` code block
+    // `zig build` & `zig build play` code block
     {
         const Root = @import("src/root.zig");
         const Utils = @import("src/utils.zig");
@@ -23,6 +23,13 @@ pub fn build(b: *std.Build) !void {
             .path = .{ .custom = "share" },
         });
 
+        const play_step = try lightmix.addDebugPlayStep(b, wave, .{
+            .step = .{ .name = "play" },
+            .wave = .{ .name = "result.wav", .bit_type = bit_type },
+            .command = &[_][]const u8{"play"}, // pkgs.sox
+        });
+
+        play_step.dependOn(&wave_install_file.step);
         b.default_step = &wave_install_file.step;
     }
 
