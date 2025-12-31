@@ -30,7 +30,7 @@ pub fn build(b: *std.Build) !void {
         });
 
         play_step.dependOn(&wave_install_file.step);
-        b.default_step = &wave_install_file.step;
+        b.getInstallStep().dependOn(&wave_install_file.step);
     }
 
     // `zig build test` code block

@@ -23,6 +23,20 @@
 
       perSystem =
         { pkgs, lib, ... }:
+        let
+          drumming-uhouho = pkgs.stdenv.mkDerivation {
+            name = "drumming-uhouho";
+            src = lib.cleanSource ./.;
+
+            nativeBuildInputs = [
+              pkgs.zig_0_15.hook
+            ];
+
+            postPatch = ''
+              ln -s ${pkgs.callPackage ./.deps.nix { }} $ZIG_GLOBAL_CACHE_DIR/p
+            '';
+          };
+        in
         {
           treefmt = {
             projectRootFile = ".git/config";
@@ -45,6 +59,11 @@
             # ShellScript
             programs.shellcheck.enable = true;
             programs.shfmt.enable = true;
+          };
+
+          packages = {
+            inherit drumming-uhouho;
+            default = drumming-uhouho;
           };
 
           devShells.default = pkgs.mkShell {
