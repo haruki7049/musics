@@ -20,16 +20,15 @@ pub fn main() !void {
 
         .sample_rate = 44100,
         .channels = 1,
-        .bits = 16,
     }).filter(normalize);
     defer wave.deinit();
 
     var file = try std.fs.cwd().createFile("result.wav", .{});
     defer file.close();
 
-    try wave.write(file);
+    try wave.write(file, .i16);
 
-    try wave.debug_play();
+    try wave.debug_play(.i16);
 }
 
 fn normalize(original_wave: Wave) !Wave {
@@ -55,6 +54,5 @@ fn normalize(original_wave: Wave) !Wave {
 
         .sample_rate = original_wave.sample_rate,
         .channels = original_wave.channels,
-        .bits = original_wave.bits,
     };
 }

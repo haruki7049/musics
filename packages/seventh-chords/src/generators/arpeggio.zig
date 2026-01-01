@@ -22,7 +22,6 @@ pub fn generate(
 
             .sample_rate = options.sample_rate,
             .channels = options.channels,
-            .bits = options.bits,
         });
 
         inline for (options.per_sound_filters) |f| {
@@ -45,11 +44,10 @@ pub fn generate(
     const composer: Composer = Composer.init_with(waveinfo_list.items, allocator, .{
         .sample_rate = options.sample_rate,
         .channels = options.channels,
-        .bits = options.bits,
     });
     defer composer.deinit();
 
-    return composer.finalize();
+    return composer.finalize(.{});
 }
 
 pub fn Options(comptime ScaleType: type) type {
@@ -61,7 +59,6 @@ pub fn Options(comptime ScaleType: type) type {
 
         sample_rate: usize,
         channels: usize,
-        bits: usize,
         per_sound_filters: []const *const fn (Wave) anyerror!Wave,
     };
 }

@@ -18,7 +18,6 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
 
         .sample_rate = options.sample_rate,
         .channels = options.channels,
-        .bits = options.bits,
     });
 
     return introduction;
@@ -35,6 +34,5 @@ pub fn Options(comptime Scale: type, comptime Synthesizers: type, comptime Gener
 
         sample_rate: usize,
         channels: usize,
-        bits: usize,
     };
 }
