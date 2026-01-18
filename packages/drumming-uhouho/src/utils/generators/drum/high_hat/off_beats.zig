@@ -3,20 +3,19 @@ const lightmix = @import("lightmix");
 
 const Wave = lightmix.Wave;
 const Composer = lightmix.Composer;
-const WaveInfo = Composer.WaveInfo;
 
-pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) Wave {
+pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) Wave(f128) {
     const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
 
-    var waveinfo_list: std.array_list.Aligned(WaveInfo, null) = .empty;
+    var waveinfo_list: std.array_list.Aligned(Composer(f128).WaveInfo, null) = .empty;
     defer waveinfo_list.deinit(allocator);
 
     {
-        var wave_list: std.array_list.Aligned(Wave, null) = .empty;
+        var wave_list: std.array_list.Aligned(Wave(f128), null) = .empty;
         defer wave_list.deinit(allocator);
 
         for (0..8) |_| {
-            var result: Wave = undefined;
+            var result: Wave(f128) = undefined;
 
             switch (options.state) {
                 .closed => {
@@ -48,7 +47,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
         }
     }
 
-    const composer: Composer = Composer.init_with(waveinfo_list.items, allocator, .{
+    const composer: Composer(f128) = Composer(f128).init_with(waveinfo_list.items, allocator, .{
         .sample_rate = options.sample_rate,
         .channels = options.channels,
     });

@@ -6,33 +6,24 @@ const Composer = lightmix.Composer;
 const WaveInfo = Composer.WaveInfo;
 
 const Parts = @import("./parts.zig");
+const Scale = @import("./scale.zig");
+const Synths = @import("./synths.zig");
+const Generators = @import("./generators.zig");
 
-pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, type, type)) Wave {
-    const introduction: Wave = Parts.Introduction.generate(allocator, .{
-        .scale = options.scale,
-        .synths = options.synths,
-        .generators = options.generators,
+pub fn gen() !Wave(f128) {
+    const allocator = std.heap.page_allocator;
 
-        .bpm = options.bpm,
-        .amplitude = options.amplitude,
+    const introduction: Wave(f128) = Parts.Introduction.generate(allocator, .{
+        .scale = Scale,
+        .synths = Synths,
+        .generators = Generators,
 
-        .sample_rate = options.sample_rate,
-        .channels = options.channels,
+        .bpm = 125,
+        .amplitude = 1.0,
+
+        .sample_rate = 44100,
+        .channels = 1,
     });
 
     return introduction;
-}
-
-pub fn Options(comptime Scale: type, comptime Synthesizers: type, comptime Generators: type) type {
-    return struct {
-        scale: Scale,
-        synths: Synthesizers,
-        generators: Generators,
-
-        bpm: usize,
-        amplitude: f32,
-
-        sample_rate: usize,
-        channels: usize,
-    };
 }

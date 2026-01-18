@@ -3,7 +3,6 @@ const lightmix = @import("lightmix");
 
 const Wave = lightmix.Wave;
 const Composer = lightmix.Composer;
-const WaveInfo = Composer.WaveInfo;
 
 fn Options(comptime Scale: type, comptime Synths: type, comptime Generators: type) type {
     return struct {
@@ -14,15 +13,15 @@ fn Options(comptime Scale: type, comptime Synths: type, comptime Generators: typ
         bpm: usize,
         amplitude: f32,
 
-        sample_rate: usize,
-        channels: usize,
+        sample_rate: u32,
+        channels: u16,
     };
 }
 
-pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, type, type)) Wave {
+pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, type, type)) Wave(f128) {
     const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
 
-    const melodies: []const WaveInfo = &[_]WaveInfo{
+    const melodies: []const Composer(f128).WaveInfo = &.{
         .{
             .wave = options.generators.Arpeggio.generate(allocator, options.scale, options.synths.Triangle, .{
                 .scales = &[_]options.scale{
@@ -101,7 +100,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
         },
     };
 
-    const base_chords: []const WaveInfo = &[_]WaveInfo{
+    const base_chords: []const Composer(f128).WaveInfo = &.{
         .{
             .wave = options.generators.Chords.generate(allocator, options.scale, options.synths.Sine, .{
                 .scales = &[_]options.scale{
@@ -176,10 +175,10 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
         },
     };
 
-    const data: []const WaveInfo = std.mem.concat(allocator, WaveInfo, &[_][]const WaveInfo{ melodies, base_chords }) catch @panic("Out of memory");
-    defer allocator.free(data);
+    const samples: []const Composer(f128).WaveInfo = std.mem.concat(allocator, Composer(f128).WaveInfo, &[_][]const Composer(f128).WaveInfo{ melodies, base_chords }) catch @panic("Out of memory");
+    defer allocator.free(samples);
 
-    const composer: Composer = Composer.init_with(data, allocator, .{
+    const composer: Composer(f128) = Composer(f128).init_with(samples, allocator, .{
         .sample_rate = options.sample_rate,
         .channels = options.channels,
     });
@@ -188,20 +187,20 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
     return composer.finalize(.{});
 }
 
-fn decay(original_wave: Wave) !Wave {
+fn decay(original_wave: Wave(f128)) !Wave(f128) {
     const allocator = original_wave.allocator;
-    var result: std.array_list.Aligned(f32, null) = .empty;
+    var result: std.array_list.Aligned(f128, null) = .empty;
 
-    for (original_wave.data, 0..) |data, n| {
-        const i = original_wave.data.len - n;
-        const volume: f32 = @as(f32, @floatFromInt(i)) * (1.0 / @as(f32, @floatFromInt(original_wave.data.len)));
+    for (original_wave.samples, 0..) |sample, n| {
+        const i = original_wave.samples.len - n;
+        const volume: f128 = @as(f128, @floatFromInt(i)) * (1.0 / @as(f128, @floatFromInt(original_wave.samples.len)));
 
-        const new_data = data * volume;
-        try result.append(allocator, new_data);
+        const new_sample = sample * volume;
+        try result.append(allocator, new_sample);
     }
 
-    return Wave{
-        .data = try result.toOwnedSlice(allocator),
+    return Wave(f128){
+        .samples = try result.toOwnedSlice(allocator),
         .allocator = allocator,
 
         .sample_rate = original_wave.sample_rate,
@@ -209,18 +208,18 @@ fn decay(original_wave: Wave) !Wave {
     };
 }
 
-fn staccato(original_wave: Wave) !Wave {
+fn staccato(original_wave: Wave(f128)) !Wave(f128) {
     const allocator = original_wave.allocator;
-    var result: std.array_list.Aligned(f32, null) = .empty;
+    var result: std.array_list.Aligned(f128, null) = .empty;
 
     const length: usize = 8000;
     for (0..length) |i| {
-        const v = original_wave.data[i];
+        const v = original_wave.samples[i];
         try result.append(allocator, v);
     }
 
-    return Wave{
-        .data = try result.toOwnedSlice(allocator),
+    return Wave(f128){
+        .samples = try result.toOwnedSlice(allocator),
         .allocator = allocator,
 
         .sample_rate = original_wave.sample_rate,

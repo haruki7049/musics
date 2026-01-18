@@ -5,12 +5,12 @@ const Wave = lightmix.Wave;
 
 const Self = @This();
 
-pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
-    const sample_rate: f32 = @floatFromInt(options.sample_rate);
-    const data: []const f32 = generate_data(options.frequency, options.amplitude, options.length, sample_rate, allocator);
+pub fn generate(allocator: std.mem.Allocator, options: Options) Wave(f128) {
+    const sample_rate: f128 = @floatFromInt(options.sample_rate);
+    const data: []const f128 = generate_data(options.frequency, options.amplitude, options.length, sample_rate, allocator);
     defer allocator.free(data);
 
-    const result: Wave = Wave.init(data, allocator, .{
+    const result: Wave(f128) = Wave(f128).init(data, allocator, .{
         .sample_rate = options.sample_rate,
         .channels = options.channels,
     });
@@ -18,17 +18,17 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave {
     return result;
 }
 
-fn generate_data(frequency: f32, amplitude: f32, length: usize, sample_rate: f32, allocator: std.mem.Allocator) []const f32 {
-    const period: f32 = sample_rate / frequency;
+fn generate_data(frequency: f128, amplitude: f128, length: usize, sample_rate: f128, allocator: std.mem.Allocator) []const f128 {
+    const period: f128 = sample_rate / frequency;
 
-    var result: std.array_list.Aligned(f32, null) = .empty;
+    var result: std.array_list.Aligned(f128, null) = .empty;
     for (0..length) |i| {
-        const phase = @as(f32, @floatFromInt(i % @as(usize, @intFromFloat(period)))) / period;
-        const triangle_value: f32 = if (phase < 0.5)
+        const phase = @as(f128, @floatFromInt(i % @as(usize, @intFromFloat(period)))) / period;
+        const triangle_value: f128 = if (phase < 0.5)
             (phase * 4.0) - 1.0 // First half
         else
             3.0 - (phase * 4.0); // Second half
-        const v: f32 = triangle_value * amplitude;
+        const v: f128 = triangle_value * amplitude;
 
         result.append(allocator, v) catch @panic("Out of memory");
     }
@@ -38,9 +38,9 @@ fn generate_data(frequency: f32, amplitude: f32, length: usize, sample_rate: f32
 
 pub const Options = struct {
     length: usize,
-    frequency: f32,
-    amplitude: f32,
+    frequency: f128,
+    amplitude: f128,
 
-    sample_rate: usize,
-    channels: usize,
+    sample_rate: u32,
+    channels: u16,
 };
