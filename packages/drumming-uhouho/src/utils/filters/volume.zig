@@ -7,20 +7,20 @@ pub const decayOptions = struct {
     start_point: usize = 0,
 };
 
-pub fn decay(original: Wave, options: decayOptions) !Wave {
+pub fn decay(original: Wave(f128), options: decayOptions) !Wave(f128) {
     const allocator = original.allocator;
-    var result: std.array_list.Aligned(f32, null) = .empty;
+    var result: std.array_list.Aligned(f128, null) = .empty;
 
-    for (original.data, options.start_point..) |data, n| {
-        const i = original.data.len - n;
-        const volume: f32 = @as(f32, @floatFromInt(i)) * (1.0 / @as(f32, @floatFromInt(original.data.len)));
+    for (original.samples, options.start_point..) |sample, n| {
+        const i = original.samples.len - n;
+        const volume: f128 = @as(f128, @floatFromInt(i)) * (1.0 / @as(f128, @floatFromInt(original.samples.len)));
 
-        const new_data = data * volume;
-        try result.append(allocator, new_data);
+        const new_sample = sample * volume;
+        try result.append(allocator, new_sample);
     }
 
-    return Wave{
-        .data = try result.toOwnedSlice(allocator),
+    return Wave(f128){
+        .samples = try result.toOwnedSlice(allocator),
         .allocator = allocator,
 
         .sample_rate = original.sample_rate,
@@ -33,23 +33,23 @@ pub const cutAttackOptions = struct {
     length: usize = 100,
 };
 
-pub fn cut_attack(original_wave: Wave, options: cutAttackOptions) !Wave {
+pub fn cut_attack(original_wave: Wave(f128), options: cutAttackOptions) !Wave(f128) {
     const allocator = original_wave.allocator;
-    var result: std.array_list.Aligned(f32, null) = .empty;
+    var result: std.array_list.Aligned(f128, null) = .empty;
 
-    for (original_wave.data, options.start_point..) |data, n| {
+    for (original_wave.samples, options.start_point..) |sample, n| {
         if (n < options.length) {
-            const percent: f32 = @floatFromInt(n / options.length);
-            try result.append(allocator, percent * data);
+            const percent: f128 = @floatFromInt(n / options.length);
+            try result.append(allocator, percent * sample);
 
             continue;
         }
 
-        try result.append(allocator, data);
+        try result.append(allocator, sample);
     }
 
-    return Wave{
-        .data = try result.toOwnedSlice(allocator),
+    return Wave(f128){
+        .samples = try result.toOwnedSlice(allocator),
         .allocator = allocator,
 
         .sample_rate = original_wave.sample_rate,
