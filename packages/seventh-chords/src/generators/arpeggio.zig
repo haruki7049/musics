@@ -3,19 +3,18 @@ const lightmix = @import("lightmix");
 
 const Wave = lightmix.Wave;
 const Composer = lightmix.Composer;
-const WaveInfo = Composer.WaveInfo;
 
 pub fn generate(
     allocator: std.mem.Allocator,
     comptime Scale: type,
     comptime Synth: type,
     comptime options: Options(Scale),
-) Wave {
-    var wave_list: std.array_list.Aligned(Wave, null) = .empty;
+) Wave(f128) {
+    var wave_list: std.array_list.Aligned(Wave(f128), null) = .empty;
     defer wave_list.deinit(allocator);
 
     for (options.scales) |scale| {
-        var result: Wave = Synth.generate(allocator, .{
+        var result: Wave(f128) = Synth.generate(allocator, .{
             .frequency = scale.generate_freq(),
             .length = options.length,
             .amplitude = options.amplitude,
@@ -31,7 +30,7 @@ pub fn generate(
         wave_list.append(allocator, result) catch @panic("Out of memory");
     }
 
-    var waveinfo_list: std.array_list.Aligned(WaveInfo, null) = .empty;
+    var waveinfo_list: std.array_list.Aligned(Composer(f128).WaveInfo, null) = .empty;
     defer waveinfo_list.deinit(allocator);
 
     var start_point: usize = 0;
@@ -41,7 +40,7 @@ pub fn generate(
         start_point = start_point + options.duration;
     }
 
-    const composer: Composer = Composer.init_with(waveinfo_list.items, allocator, .{
+    const composer: Composer(f128) = Composer(f128).init_with(waveinfo_list.items, allocator, .{
         .sample_rate = options.sample_rate,
         .channels = options.channels,
     });
@@ -59,6 +58,6 @@ pub fn Options(comptime ScaleType: type) type {
 
         sample_rate: usize,
         channels: usize,
-        per_sound_filters: []const *const fn (Wave) anyerror!Wave,
+        per_sound_filters: []const *const fn (Wave(f128)) anyerror!Wave(f128),
     };
 }

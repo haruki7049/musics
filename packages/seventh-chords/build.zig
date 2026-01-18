@@ -1,88 +1,54 @@
 const std = @import("std");
-const lightmix = @import("lightmix");
-
-const bit_type = .i16;
+const l = @import("lightmix");
 
 pub fn build(b: *std.Build) !void {
-    // `zig build` & `zig build play` code block
-    {
-        const Root = @import("src/root.zig");
-        const Scale = @import("src/scale.zig");
-        const Synths = @import("src/synths.zig");
-        const Generators = @import("src/generators.zig");
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
 
-        const wave: lightmix.Wave = Root.generate(b.allocator, .{
-            .scale = Scale,
-            .synths = Synths,
-            .generators = Generators,
+    const lightmix = b.dependency("lightmix", .{});
 
-            .bpm = 125,
-            .amplitude = 1.0,
+    const mod = b.createModule(.{
+        .root_source_file = b.path("src/root.zig"),
+        .target = target,
+        .optimize = optimize,
+        .imports = &.{
+            .{ .name = "lightmix", .module = lightmix.module("lightmix") },
+        },
+    });
 
-            .sample_rate = 44100,
-            .channels = 1,
-        }).filter(normalize);
-        defer wave.deinit();
+    const wave_step = try l.createWave(b, mod, .{
+        .func_name = "gen",
+        .wave = .{ .bits = 16, .format_code = .pcm },
+    });
+    b.getInstallStep().dependOn(wave_step);
 
-        const wave_install_file: *std.Build.Step.InstallFile = try lightmix.addWaveInstallFile(b, wave, .{
-            .wave = .{ .name = "result.wav", .bit_type = bit_type },
-            .path = .{ .custom = "share" },
-        });
+    // Unit tests
+    const unit_tests = b.addTest(.{ .root_module = mod });
+    const run_unit_tests = b.addRunArtifact(unit_tests);
 
-        const play_step = try lightmix.addDebugPlayStep(b, wave, .{
-            .step = .{ .name = "play" },
-            .wave = .{ .name = "result.wav", .bit_type = bit_type },
-            .command = &[_][]const u8{"play"}, // pkgs.sox
-        });
-
-        play_step.dependOn(&wave_install_file.step);
-        b.getInstallStep().dependOn(&wave_install_file.step);
-    }
-
-    // `zig build test` code block
-    {
-        const target = b.standardTargetOptions(.{});
-        const optimize = b.standardOptimizeOption(.{});
-
-        // Dependencies
-        const lightmix_dep = b.dependency("lightmix", .{ .with_debug_features = true });
-
-        // Modules
-        const lib_mod = b.createModule(.{
-            .root_source_file = b.path("src/root.zig"),
-            .target = target,
-            .optimize = optimize,
-        });
-        lib_mod.addImport("lightmix", lightmix_dep.module("lightmix"));
-
-        // Unit tests
-        const lib_unit_tests = b.addTest(.{ .root_module = lib_mod });
-        const run_lib_unit_tests = b.addRunArtifact(lib_unit_tests);
-
-        // Test step
-        const test_step = b.step("test", "Run unit tests");
-        test_step.dependOn(&run_lib_unit_tests.step);
-    }
+    // Test step
+    const test_step = b.step("test", "Run unit tests");
+    test_step.dependOn(&run_unit_tests.step);
 }
 
-fn normalize(original_wave: lightmix.Wave) !lightmix.Wave {
+fn normalize(original_wave: l.Wave(f128)) !l.Wave(f128) {
     const allocator = original_wave.allocator;
-    var result: std.array_list.Aligned(f32, null) = .empty;
+    var result: std.array_list.Aligned(f128, null) = .empty;
 
-    var max_volume: f32 = 0.0;
+    var max_volume: f128 = 0.0;
     for (original_wave.data) |sample| {
         if (@abs(sample) > max_volume)
             max_volume = @abs(sample);
     }
 
     for (original_wave.data) |sample| {
-        const volume: f32 = 1.0 / max_volume;
+        const volume: f128 = 1.0 / max_volume;
 
-        const new_sample: f32 = sample * volume;
+        const new_sample: f128 = sample * volume;
         try result.append(allocator, new_sample);
     }
 
-    return lightmix.Wave{
+    return l.Wave(f128){
         .data = try result.toOwnedSlice(allocator),
         .allocator = allocator,
 
