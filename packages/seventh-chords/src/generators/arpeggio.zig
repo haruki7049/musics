@@ -6,15 +6,13 @@ const Composer = lightmix.Composer;
 
 pub fn generate(
     allocator: std.mem.Allocator,
-    comptime Scale: type,
-    comptime Synth: type,
-    comptime options: Options(Scale),
+    comptime options: anytype,
 ) Wave(f128) {
     var wave_list: std.array_list.Aligned(Wave(f128), null) = .empty;
     defer wave_list.deinit(allocator);
 
     for (options.scales) |scale| {
-        var result: Wave(f128) = Synth.generate(allocator, .{
+        var result: Wave(f128) = options.synth.generate(allocator, .{
             .frequency = scale.generate_freq(),
             .length = options.length,
             .amplitude = options.amplitude,
@@ -23,8 +21,8 @@ pub fn generate(
             .channels = options.channels,
         });
 
-        inline for (options.per_sound_filters) |f| {
-            result = result.filter(f.*);
+        inline for (options.per_sounds) |filter_set| {
+            result = result.filter_with(filter_set.args_t, filter_set.filter_fn, .{});
         }
 
         wave_list.append(allocator, result) catch @panic("Out of memory");
@@ -47,17 +45,4 @@ pub fn generate(
     defer composer.deinit();
 
     return composer.finalize(.{});
-}
-
-pub fn Options(comptime ScaleType: type) type {
-    return struct {
-        scales: []const ScaleType,
-        length: usize,
-        duration: usize,
-        amplitude: f32,
-
-        sample_rate: usize,
-        channels: usize,
-        per_sound_filters: []const *const fn (Wave(f128)) anyerror!Wave(f128),
-    };
 }

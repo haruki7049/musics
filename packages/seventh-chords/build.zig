@@ -6,6 +6,7 @@ pub fn build(b: *std.Build) !void {
     const optimize = b.standardOptimizeOption(.{});
 
     const lightmix = b.dependency("lightmix", .{});
+    const lightmix_filters = b.dependency("lightmix_filters", .{});
 
     const mod = b.createModule(.{
         .root_source_file = b.path("src/root.zig"),
@@ -13,6 +14,7 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
         .imports = &.{
             .{ .name = "lightmix", .module = lightmix.module("lightmix") },
+            .{ .name = "lightmix_filters", .module = lightmix_filters.module("lightmix_filters") },
         },
     });
 
@@ -29,30 +31,4 @@ pub fn build(b: *std.Build) !void {
     // Test step
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_unit_tests.step);
-}
-
-fn normalize(original_wave: l.Wave(f128)) !l.Wave(f128) {
-    const allocator = original_wave.allocator;
-    var result: std.array_list.Aligned(f128, null) = .empty;
-
-    var max_volume: f128 = 0.0;
-    for (original_wave.data) |sample| {
-        if (@abs(sample) > max_volume)
-            max_volume = @abs(sample);
-    }
-
-    for (original_wave.data) |sample| {
-        const volume: f128 = 1.0 / max_volume;
-
-        const new_sample: f128 = sample * volume;
-        try result.append(allocator, new_sample);
-    }
-
-    return l.Wave(f128){
-        .data = try result.toOwnedSlice(allocator),
-        .allocator = allocator,
-
-        .sample_rate = original_wave.sample_rate,
-        .channels = original_wave.channels,
-    };
 }

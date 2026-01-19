@@ -1,8 +1,12 @@
 const std = @import("std");
 const lightmix = @import("lightmix");
+const lightmix_filters = @import("lightmix_filters");
 
 const Wave = lightmix.Wave;
 const Composer = lightmix.Composer;
+
+const decay = lightmix_filters.volume.decay;
+const DecayArgs = lightmix_filters.volume.DecayArgs;
 
 fn Options(comptime Scale: type, comptime Synths: type, comptime Generators: type) type {
     return struct {
@@ -23,7 +27,8 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
 
     const melodies: []const Composer(f128).WaveInfo = &.{
         .{
-            .wave = options.generators.Arpeggio.generate(allocator, options.scale, options.synths.Triangle, .{
+            .wave = options.generators.Arpeggio.generate(allocator, .{
+                .synth = options.synths.Triangle,
                 .scales = &[_]options.scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
@@ -35,14 +40,15 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .per_sound_filters = &.{
-                    &decay,
+                .per_sounds = &.{
+                    .{ .filter_fn = &decay, .args_t = DecayArgs },
                 },
             }),
             .start_point = samples_per_beat * 0,
         },
         .{
-            .wave = options.generators.Arpeggio.generate(allocator, options.scale, options.synths.Triangle, .{
+            .wave = options.generators.Arpeggio.generate(allocator, .{
+                .synth = options.synths.Triangle,
                 .scales = &[_]options.scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },
@@ -54,14 +60,15 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .per_sound_filters = &.{
-                    &decay,
+                .per_sounds = &.{
+                    .{ .filter_fn = &decay, .args_t = DecayArgs },
                 },
             }),
             .start_point = samples_per_beat * 4,
         },
         .{
-            .wave = options.generators.Arpeggio.generate(allocator, options.scale, options.synths.Triangle, .{
+            .wave = options.generators.Arpeggio.generate(allocator, .{
+                .synth = options.synths.Triangle,
                 .scales = &[_]options.scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
@@ -73,14 +80,15 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .per_sound_filters = &.{
-                    &decay,
+                .per_sounds = &.{
+                    .{ .filter_fn = &decay, .args_t = DecayArgs },
                 },
             }),
             .start_point = samples_per_beat * 8,
         },
         .{
-            .wave = options.generators.Arpeggio.generate(allocator, options.scale, options.synths.Triangle, .{
+            .wave = options.generators.Arpeggio.generate(allocator, .{
+                .synth = options.synths.Triangle,
                 .scales = &[_]options.scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },
@@ -92,8 +100,8 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .per_sound_filters = &.{
-                    &decay,
+                .per_sounds = &.{
+                    .{ .filter_fn = &decay, .args_t = DecayArgs },
                 },
             }),
             .start_point = samples_per_beat * 12,
@@ -102,7 +110,8 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
 
     const base_chords: []const Composer(f128).WaveInfo = &.{
         .{
-            .wave = options.generators.Chords.generate(allocator, options.scale, options.synths.Sine, .{
+            .wave = options.generators.Chords.generate(allocator, .{
+                .synth = options.synths.Sine,
                 .scales = &[_]options.scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
@@ -113,14 +122,15 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .per_sound_filters = &.{
-                    &decay,
+                .per_sounds = &.{
+                    .{ .filter_fn = &decay, .args_t = DecayArgs },
                 },
             }),
             .start_point = samples_per_beat * 0,
         },
         .{
-            .wave = options.generators.Chords.generate(allocator, options.scale, options.synths.Sine, .{
+            .wave = options.generators.Chords.generate(allocator, .{
+                .synth = options.synths.Sine,
                 .scales = &[_]options.scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },
@@ -131,14 +141,15 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .per_sound_filters = &.{
-                    &decay,
+                .per_sounds = &.{
+                    .{ .filter_fn = &decay, .args_t = DecayArgs },
                 },
             }),
             .start_point = samples_per_beat * 4,
         },
         .{
-            .wave = options.generators.Chords.generate(allocator, options.scale, options.synths.Sine, .{
+            .wave = options.generators.Chords.generate(allocator, .{
+                .synth = options.synths.Sine,
                 .scales = &[_]options.scale{
                     .{ .code = .c, .octave = 4 },
                     .{ .code = .e, .octave = 4 },
@@ -149,14 +160,15 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .per_sound_filters = &.{
-                    &decay,
+                .per_sounds = &.{
+                    .{ .filter_fn = &decay, .args_t = DecayArgs },
                 },
             }),
             .start_point = samples_per_beat * 8,
         },
         .{
-            .wave = options.generators.Chords.generate(allocator, options.scale, options.synths.Sine, .{
+            .wave = options.generators.Chords.generate(allocator, .{
+                .synth = options.synths.Sine,
                 .scales = &[_]options.scale{
                     .{ .code = .d, .octave = 4 },
                     .{ .code = .f, .octave = 4 },
@@ -167,8 +179,8 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
                 .amplitude = options.amplitude,
                 .sample_rate = options.sample_rate,
                 .channels = options.channels,
-                .per_sound_filters = &.{
-                    &decay,
+                .per_sounds = &.{
+                    .{ .filter_fn = &decay, .args_t = DecayArgs },
                 },
             }),
             .start_point = samples_per_beat * 12,
@@ -185,44 +197,4 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type, ty
     defer composer.deinit();
 
     return composer.finalize(.{});
-}
-
-fn decay(original_wave: Wave(f128)) !Wave(f128) {
-    const allocator = original_wave.allocator;
-    var result: std.array_list.Aligned(f128, null) = .empty;
-
-    for (original_wave.samples, 0..) |sample, n| {
-        const i = original_wave.samples.len - n;
-        const volume: f128 = @as(f128, @floatFromInt(i)) * (1.0 / @as(f128, @floatFromInt(original_wave.samples.len)));
-
-        const new_sample = sample * volume;
-        try result.append(allocator, new_sample);
-    }
-
-    return Wave(f128){
-        .samples = try result.toOwnedSlice(allocator),
-        .allocator = allocator,
-
-        .sample_rate = original_wave.sample_rate,
-        .channels = original_wave.channels,
-    };
-}
-
-fn staccato(original_wave: Wave(f128)) !Wave(f128) {
-    const allocator = original_wave.allocator;
-    var result: std.array_list.Aligned(f128, null) = .empty;
-
-    const length: usize = 8000;
-    for (0..length) |i| {
-        const v = original_wave.samples[i];
-        try result.append(allocator, v);
-    }
-
-    return Wave(f128){
-        .samples = try result.toOwnedSlice(allocator),
-        .allocator = allocator,
-
-        .sample_rate = original_wave.sample_rate,
-        .channels = original_wave.channels,
-    };
 }
