@@ -1,8 +1,14 @@
 const std = @import("std");
 const lightmix = @import("lightmix");
+const lightmix_filters = @import("lightmix_filters");
 
 const Wave = lightmix.Wave;
 const Composer = lightmix.Composer;
+
+const cutAttack = lightmix_filters.volume.cutAttack;
+const CutAttackArgs = lightmix_filters.volume.CutAttackArgs;
+const decay = lightmix_filters.volume.decay;
+const DecayArgs = lightmix_filters.volume.DecayArgs;
 
 pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) Wave(f128) {
     const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
@@ -25,18 +31,12 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
             });
 
             // Filters
-            const cutAttackOptions = options.utils.Filters.Volume.cutAttackOptions;
-            const cut_attack = options.utils.Filters.Volume.cut_attack;
-
             for (0..1) |_| {
-                result = result.filter_with(cutAttackOptions, cut_attack, .{});
+                result = result.filter_with(CutAttackArgs, cutAttack, .{});
             }
 
-            const decayOptions = options.utils.Filters.Volume.decayOptions;
-            const decay = options.utils.Filters.Volume.decay;
-
             for (0..6) |_| {
-                result = result.filter_with(decayOptions, decay, .{});
+                result = result.filter_with(DecayArgs, decay, .{});
             }
 
             wave_list.append(allocator, result) catch @panic("Out of memory");
@@ -65,18 +65,12 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
             });
 
             // Filters
-            const cutAttackOptions = options.utils.Filters.Volume.cutAttackOptions;
-            const cut_attack = options.utils.Filters.Volume.cut_attack;
-
             for (0..1) |_| {
-                result = result.filter_with(cutAttackOptions, cut_attack, .{});
+                result = result.filter_with(CutAttackArgs, cutAttack, .{});
             }
 
-            const decayOptions = options.utils.Filters.Volume.decayOptions;
-            const decay = options.utils.Filters.Volume.decay;
-
             for (0..6) |_| {
-                result = result.filter_with(decayOptions, decay, .{});
+                result = result.filter_with(DecayArgs, decay, .{});
             }
 
             wave_list.append(allocator, result) catch @panic("Out of memory");

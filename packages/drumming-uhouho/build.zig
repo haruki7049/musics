@@ -6,6 +6,7 @@ pub fn build(b: *std.Build) !void {
     const optimize = b.standardOptimizeOption(.{});
 
     const lightmix = b.dependency("lightmix", .{});
+    const lightmix_filters = b.dependency("lightmix_filters", .{});
 
     const mod = b.createModule(.{
         .root_source_file = b.path("src/root.zig"),
@@ -13,6 +14,7 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
         .imports = &.{
             .{ .name = "lightmix", .module = lightmix.module("lightmix") },
+            .{ .name = "lightmix_filters", .module = lightmix_filters.module("lightmix_filters") },
         },
     });
 
