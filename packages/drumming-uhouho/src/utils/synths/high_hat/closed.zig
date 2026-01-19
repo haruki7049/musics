@@ -1,9 +1,12 @@
 const std = @import("std");
 const lightmix = @import("lightmix");
+const lightmix_filters = @import("lightmix_filters");
 
 const Wave = lightmix.Wave;
-
 const Self = @This();
+
+const decay = lightmix_filters.volume.decay;
+const DecayArgs = lightmix_filters.volume.DecayArgs;
 
 pub fn generate(allocator: std.mem.Allocator, options: Options) Wave(f128) {
     const base_data: []const f128 = generate_closed_high_hat_data(
@@ -17,10 +20,10 @@ pub fn generate(allocator: std.mem.Allocator, options: Options) Wave(f128) {
         .channels = options.channels,
     })
         .filter(attack)
-        .filter(decay)
-        .filter(decay)
-        .filter(decay)
-        .filter(decay);
+        .filter_with(DecayArgs, decay, .{})
+        .filter_with(DecayArgs, decay, .{})
+        .filter_with(DecayArgs, decay, .{})
+        .filter_with(DecayArgs, decay, .{});
 
     return result;
 }
@@ -48,34 +51,14 @@ pub const Options = struct {
     channels: u16,
 };
 
-fn decay(original_wave: Wave(f128)) !Wave(f128) {
-    var result: std.array_list.Aligned(f128, null) = .empty;
-
-    for (original_wave.samples, 0..) |sample, n| {
-        const i = original_wave.samples.len - n;
-        const volume: f128 = @as(f128, @floatFromInt(i)) * (1.0 / @as(f128, @floatFromInt(original_wave.samples.len)));
-
-        const new_sample = sample * volume;
-        try result.append(original_wave.allocator, new_sample);
-    }
-
-    return Wave(f128){
-        .samples = try result.toOwnedSlice(original_wave.allocator),
-        .allocator = original_wave.allocator,
-
-        .sample_rate = original_wave.sample_rate,
-        .channels = original_wave.channels,
-    };
-}
-
-fn attack(original_wave: Wave(f128)) !Wave(f128) {
-    const allocator = original_wave.allocator;
-    var result: std.array_list.Aligned(f128, null) = .empty;
+fn attack(comptime T: type, original: Wave(T)) !Wave(T) {
+    const allocator = original.allocator;
+    var result: std.array_list.Aligned(T, null) = .empty;
 
     const length: usize = 100;
-    for (original_wave.samples, 1..) |sample, n| {
+    for (original.samples, 1..) |sample, n| {
         if (n < length) {
-            const percent: f128 = @as(f128, @floatFromInt(n)) / @as(f128, @floatFromInt(length));
+            const percent: T = @as(T, @floatFromInt(n)) / @as(T, @floatFromInt(length));
             try result.append(allocator, percent * sample);
 
             continue;
@@ -84,11 +67,11 @@ fn attack(original_wave: Wave(f128)) !Wave(f128) {
         try result.append(allocator, sample);
     }
 
-    return Wave(f128){
+    return Wave(T){
         .samples = try result.toOwnedSlice(allocator),
         .allocator = allocator,
 
-        .sample_rate = original_wave.sample_rate,
-        .channels = original_wave.channels,
+        .sample_rate = original.sample_rate,
+        .channels = original.channels,
     };
 }

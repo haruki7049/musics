@@ -6,8 +6,16 @@
 
     .dependencies = .{
         .lightmix = .{
-            .url = "https://github.com/haruki7049/lightmix/archive/refs/tags/0.14.1.tar.gz",
-            .hash = "lightmix-0.14.1-SpCovKo6AgBuGk0XzG_r_BzZaf3v-w2qjKOfVaV3jqWv",
+            .url = "https://github.com/haruki7049/lightmix/archive/71ba6db8de7d9ec4d1e33a6c0e1a1ae28ed62dca.tar.gz",
+            .hash = "lightmix-0.14.1-SpCovIlLAgBdJA37hNHh6FZHJk0MVFTNw94EuR2vk5bV",
+        },
+        .lightmix_template = .{
+            .url = "https://github.com/haruki7049/lightmix_filters/archive/bde27ec6c5518306e710daf8205df3b52126afe8.tar.gz",
+            .hash = "lightmix_template-0.0.0-ahpAt-MPIgBaY62y2EVNj-5YFUrFCaOk-LLoFCzFhTvK",
+        },
+        .lightmix_filters = .{
+            .url = "https://github.com/haruki7049/lightmix_filters/archive/507e1304141e32d2acb6481ec99d0d769056c95a.tar.gz",
+            .hash = "lightmix_filters-0.0.0-QAX9geoPIgDsWHbwrwPhtHJPlL4-wfYou60ouMQAyW1Y",
         },
     },
 
