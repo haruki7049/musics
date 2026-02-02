@@ -11,7 +11,7 @@ const Utils = @import("./utils.zig");
 pub fn gen() !Wave(f128) {
     const allocator = std.heap.page_allocator;
 
-    const introduction: Wave(f128) = Parts.Introduction.generate(allocator, .{
+    var introduction: Wave(f128) = try Parts.Introduction.generate(allocator, .{
         .utils = Utils,
 
         .bpm = 170,
@@ -19,7 +19,8 @@ pub fn gen() !Wave(f128) {
 
         .sample_rate = 44100,
         .channels = 1,
-    }).filter(normalize);
+    });
+    try introduction.filter(normalize);
 
     return introduction;
 }

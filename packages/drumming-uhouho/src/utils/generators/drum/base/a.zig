@@ -10,7 +10,7 @@ const CutAttackArgs = lightmix_filters.volume.CutAttackArgs;
 const decay = lightmix_filters.volume.decay;
 const DecayArgs = lightmix_filters.volume.DecayArgs;
 
-pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) Wave(f128) {
+pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) !Wave(f128) {
     const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
 
     var waveinfo_list: std.array_list.Aligned(Composer(f128).WaveInfo, null) = .empty;
@@ -21,7 +21,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
         defer wave_list.deinit(allocator);
 
         for (0..7) |_| {
-            var result: Wave(f128) = options.utils.Synths.Sine.generate(allocator, .{
+            var result: Wave(f128) = try options.utils.Synths.Sine.generate(allocator, .{
                 .frequency = options.frequency,
                 .length = samples_per_beat,
                 .amplitude = options.amplitude,
@@ -32,19 +32,19 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
 
             // Filters
             for (0..1) |_| {
-                result = result.filter_with(CutAttackArgs, cutAttack, .{});
+                try result.filter_with(CutAttackArgs, cutAttack, .{});
             }
 
             for (0..6) |_| {
-                result = result.filter_with(DecayArgs, decay, .{});
+                try result.filter_with(DecayArgs, decay, .{});
             }
 
-            wave_list.append(allocator, result) catch @panic("Out of memory");
+            try wave_list.append(allocator, result);
         }
 
         var start_point: usize = 0;
         for (wave_list.items) |wave| {
-            waveinfo_list.append(allocator, .{ .wave = wave, .start_point = start_point }) catch @panic("Out of memory");
+            try waveinfo_list.append(allocator, .{ .wave = wave, .start_point = start_point });
 
             start_point = start_point + samples_per_beat;
         }
@@ -55,7 +55,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
         defer wave_list.deinit(allocator);
 
         for (0..2) |_| {
-            var result: Wave(f128) = options.utils.Synths.Sine.generate(allocator, .{
+            var result: Wave(f128) = try options.utils.Synths.Sine.generate(allocator, .{
                 .frequency = options.frequency,
                 .length = samples_per_beat,
                 .amplitude = options.amplitude,
@@ -66,31 +66,31 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
 
             // Filters
             for (0..1) |_| {
-                result = result.filter_with(CutAttackArgs, cutAttack, .{});
+                try result.filter_with(CutAttackArgs, cutAttack, .{});
             }
 
             for (0..6) |_| {
-                result = result.filter_with(DecayArgs, decay, .{});
+                try result.filter_with(DecayArgs, decay, .{});
             }
 
-            wave_list.append(allocator, result) catch @panic("Out of memory");
+            try wave_list.append(allocator, result);
         }
 
         var start_point: usize = samples_per_beat * 7;
         for (wave_list.items) |wave| {
-            waveinfo_list.append(allocator, .{ .wave = wave, .start_point = start_point }) catch @panic("Out of memory");
+            try waveinfo_list.append(allocator, .{ .wave = wave, .start_point = start_point });
 
             start_point = start_point + (samples_per_beat / 2);
         }
     }
 
-    const composer = Composer(f128).init_with(waveinfo_list.items, allocator, .{
+    const composer: Composer(f128) = try Composer(f128).init_with(waveinfo_list.items, allocator, .{
         .sample_rate = options.sample_rate,
         .channels = options.channels,
     });
     defer composer.deinit();
 
-    return composer.finalize(.{});
+    return try composer.finalize(.{});
 }
 
 pub fn Options(comptime Utils: type) type {

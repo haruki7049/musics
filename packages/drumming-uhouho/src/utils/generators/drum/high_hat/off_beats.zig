@@ -4,7 +4,7 @@ const lightmix = @import("lightmix");
 const Wave = lightmix.Wave;
 const Composer = lightmix.Composer;
 
-pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) Wave(f128) {
+pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) !Wave(f128) {
     const samples_per_beat: usize = @intFromFloat(@as(f32, @floatFromInt(60)) / @as(f32, @floatFromInt(options.bpm)) * @as(f32, @floatFromInt(options.sample_rate)));
 
     var waveinfo_list: std.array_list.Aligned(Composer(f128).WaveInfo, null) = .empty;
@@ -19,7 +19,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
 
             switch (options.state) {
                 .closed => {
-                    result = options.utils.Synths.HighHat.Closed.generate(allocator, .{
+                    result = try options.utils.Synths.HighHat.Closed.generate(allocator, .{
                         .amplitude = options.amplitude,
 
                         .sample_rate = options.sample_rate,
@@ -27,7 +27,7 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
                     });
                 },
                 .opened => {
-                    result = options.utils.Synths.HighHat.Opened.generate(allocator, .{
+                    result = try options.utils.Synths.HighHat.Opened.generate(allocator, .{
                         .amplitude = options.amplitude,
 
                         .sample_rate = options.sample_rate,
@@ -36,18 +36,18 @@ pub fn generate(allocator: std.mem.Allocator, comptime options: Options(type)) W
                 },
             }
 
-            wave_list.append(allocator, result) catch @panic("Out of memory");
+            try wave_list.append(allocator, result);
         }
 
         var start_point: usize = samples_per_beat / 2;
         for (wave_list.items) |wave| {
-            waveinfo_list.append(allocator, .{ .wave = wave, .start_point = start_point }) catch @panic("Out of memory");
+            try waveinfo_list.append(allocator, .{ .wave = wave, .start_point = start_point });
 
             start_point = start_point + samples_per_beat;
         }
     }
 
-    const composer: Composer(f128) = Composer(f128).init_with(waveinfo_list.items, allocator, .{
+    const composer: Composer(f128) = try Composer(f128).init_with(waveinfo_list.items, allocator, .{
         .sample_rate = options.sample_rate,
         .channels = options.channels,
     });
