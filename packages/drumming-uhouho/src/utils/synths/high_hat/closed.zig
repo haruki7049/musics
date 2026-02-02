@@ -8,27 +8,28 @@ const Self = @This();
 const decay = lightmix_filters.volume.decay;
 const DecayArgs = lightmix_filters.volume.DecayArgs;
 
-pub fn generate(allocator: std.mem.Allocator, options: Options) Wave(f128) {
-    const base_data: []const f128 = generate_closed_high_hat_data(
+pub fn generate(allocator: std.mem.Allocator, options: Options) !Wave(f128) {
+    const base_samples: []const f128 = generate_closed_high_hat_samples(
         options.amplitude,
         allocator,
     );
-    defer allocator.free(base_data);
 
-    const result: Wave(f128) = Wave(f128).init(base_data, allocator, .{
+    var result: Wave(f128) = Wave(f128){
+        .samples = base_samples,
+        .allocator = allocator,
         .sample_rate = options.sample_rate,
         .channels = options.channels,
-    })
-        .filter(attack)
-        .filter_with(DecayArgs, decay, .{})
-        .filter_with(DecayArgs, decay, .{})
-        .filter_with(DecayArgs, decay, .{})
-        .filter_with(DecayArgs, decay, .{});
+    };
+    try result.filter(attack);
+    try result.filter_with(DecayArgs, decay, .{});
+    try result.filter_with(DecayArgs, decay, .{});
+    try result.filter_with(DecayArgs, decay, .{});
+    try result.filter_with(DecayArgs, decay, .{});
 
     return result;
 }
 
-fn generate_closed_high_hat_data(amplitude: f128, allocator: std.mem.Allocator) []const f128 {
+fn generate_closed_high_hat_samples(amplitude: f128, allocator: std.mem.Allocator) []const f128 {
     var result: std.array_list.Aligned(f128, null) = .empty;
     defer result.deinit(allocator);
 
